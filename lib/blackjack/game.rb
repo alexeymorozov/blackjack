@@ -7,8 +7,9 @@ module Blackjack
     def start(deck)
       welcome
       initial_deal(deck)
+      result = stand if @player_hand.score == 21
       show_hands
-      stand if @player_hand.score == 21
+      show_result(result)
     end
 
     def welcome
@@ -20,9 +21,12 @@ module Blackjack
       @player_hand = Hand.new
       @dealer_hand = Hand.new
 
-      2.times do
-        @player_hand << @deck.pop
-        @dealer_hand << @deck.pop
+      2.times do |i|
+        @player_hand << Card.new(@deck.pop).face_up
+
+        card = Card.new(@deck.pop)
+        card.face_up if i == 1
+        @dealer_hand << card
       end
     end
 
@@ -32,11 +36,20 @@ module Blackjack
     end
 
     def stand
+      @dealer_hand.face_up
       if @dealer_hand.score < 21
-        @printer.puts("You win!")
+        :win
       else
-        @printer.puts("You push!")
+        :push
       end
+    end
+
+    def show_result(result)
+      message = case result
+                when :win then "You win!"
+                when :push then "You push!"
+                end
+      @printer.puts(message)
     end
   end
 end
