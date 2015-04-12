@@ -26,7 +26,8 @@ module Blackjack
         else
           value = case card.rank
                   when 'A' then 11
-                  when 'Q', 'J' then 10
+                  when 'K', 'Q', 'J', 'T' then 10
+                  when '2'..'9' then card.rank.to_i
                   else raise Exception.new("Unknown card rank '#{card.rank}'.")
                   end
         end
