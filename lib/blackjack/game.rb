@@ -25,7 +25,7 @@ module Blackjack
         @player_hand << Card.new(@deck.pop).face_up
 
         card = Card.new(@deck.pop)
-        card.face_up if i == 1
+        card.face_up if i == 0
         @dealer_hand << card
       end
     end
