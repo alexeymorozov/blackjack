@@ -42,6 +42,11 @@ module Blackjack
           expect(printer).to receive(:puts).with("Dealer's hand: A♦ ?. Score: 11.")
           game.start("Q♥ A♦ J♥ J♦")
         end
+
+        it "prompts the player for the next action" do
+          expect(printer).to receive(:puts).with("Enter action:")
+          game.start("Q♥ A♦ J♥ J♦")
+        end
       end
     end
   end

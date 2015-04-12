@@ -7,7 +7,7 @@ module Blackjack
     def start(deck)
       welcome
       initial_deal(deck)
-      result = stand if @player_hand.score == 21
+      result = @player_hand.score == 21 ? stand : :continue
       show_hands
       show_result(result)
     end
@@ -48,6 +48,7 @@ module Blackjack
       message = case result
                 when :win then "You win!"
                 when :push then "You push!"
+                when :continue then "Enter action:"
                 end
       @printer.puts(message)
     end
