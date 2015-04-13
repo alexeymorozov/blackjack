@@ -30,3 +30,4 @@ Feature: player starts game
       | Q♥ A♦ J♥ J♦ | Q♥ J♥       | 20           | A♦ ?        | 11           | Enter action: |
       | Q♥ Q♦ J♥ J♦ | Q♥ J♥       | 20           | Q♦ ?        | 10           | Enter action: |
       | 3♥ Q♦ 2♥ J♦ | 3♥ 2♥       | 5            | Q♦ ?        | 10           | Enter action: |
+      | A♥ Q♦ A♠ J♦ | A♥ A♠       | 12           | Q♦ ?        | 10           | Enter action: |

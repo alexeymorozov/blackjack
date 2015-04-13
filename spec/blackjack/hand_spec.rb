@@ -45,10 +45,25 @@ module Blackjack
 
       context "two cards" do
         it "returns sum of the cards values" do
-          two = Card.new('2♥').face_up
-          three = Card.new('3♥').face_up
-          hand = Hand.new([two, three])
+          cards = ['2♥', '3♠'].map { |code| Card.new(code).face_up }
+          hand = Hand.new(cards)
           expect(hand.score).to eq(5)
+        end
+      end
+
+      context "two aces" do
+        it "returns 12" do
+          cards = ['A♥', 'A♠'].map { |code| Card.new(code).face_up }
+          hand = Hand.new(cards)
+          expect(hand.score).to eq(12)
+        end
+      end
+
+      context "two aces and ten" do
+        it "returns 12" do
+          cards = ['A♥', 'A♠', 'T♥'].map { |code| Card.new(code).face_up }
+          hand = Hand.new(cards)
+          expect(hand.score).to eq(12)
         end
       end
 
