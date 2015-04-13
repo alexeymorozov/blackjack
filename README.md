@@ -1,0 +1,5 @@
+# Blackjack
+
+## Play
+
+    bin/blackjack
