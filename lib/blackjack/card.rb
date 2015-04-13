@@ -22,11 +22,7 @@ module Blackjack
     end
 
     def to_s
-      if face_up?
-        @rank + @suit
-      else
-        '?'
-      end
+      face_up? ? @rank + @suit : '?'
     end
   end
 end
