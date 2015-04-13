@@ -6,13 +6,11 @@ Given(/^the deck is "(.*?)"$/) do |deck|
 end
 
 Given(/^the player hand is "(.*?)"$/) do |card_codes|
-  cards = card_codes.split.map { |code| Blackjack::Card.new(code).face_up }
-  @player_hand = Blackjack::Hand.new(cards)
+  @player_hand = card_codes
 end
 
 Given(/^the dealer hand is "(.*?)"$/) do |card_codes|
-  cards = card_codes.split.map { |code| Blackjack::Card.new(code).face_up }
-  @dealer_hand = Blackjack::Hand.new(cards)
+  @dealer_hand = card_codes
 end
 
 Given(/^the game is started$/) do

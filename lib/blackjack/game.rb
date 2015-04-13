@@ -4,6 +4,12 @@ module Blackjack
       @printer = printer
     end
 
+    def start_from_saving(deck, player_hand, dealer_hand)
+      @deck = Deck.create_from_string(deck)
+      @player_hand = Hand.create_player_hand_from_string(player_hand)
+      @dealer_hand = Hand.create_dealer_hand_from_string(dealer_hand)
+    end
+
     def start(deck)
       welcome
       initial_deal(deck)
@@ -13,6 +19,12 @@ module Blackjack
         show_hands
         prompts_for_action
       end
+    end
+
+    def hit
+      @player_hand << @deck.pop.face_up
+      show_hands
+      prompts_for_action
     end
 
     private

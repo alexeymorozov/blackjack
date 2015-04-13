@@ -1,5 +1,16 @@
 module Blackjack
   class Hand
+    def self.create_player_hand_from_string(card_codes)
+      cards = card_codes.split.map { |code| Card.new(code).face_up }
+      self.new(cards)
+    end
+
+    def self.create_dealer_hand_from_string(card_codes)
+      cards = card_codes.split.map { |code| Card.new(code) }
+      cards[0].face_up
+      self.new(cards)
+    end
+
     def initialize(cards = [])
       @cards = []
       cards.each do |card|
