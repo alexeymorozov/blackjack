@@ -11,38 +11,12 @@ module Blackjack
     describe "#face_up" do
       it "flips all cards face up" do
         card = Card.new('A♥')
-        hand = Hand.new([card])
-        hand.face_up
+        Hand.new([card]).face_up
         expect(card.face_up?).to be true
       end
     end
 
     describe "#score" do
-      context "blackjack" do
-        it "returns 21" do
-          hand = Hand.new(['A♥', 'Q♥'])
-          hand.face_up
-          expect(hand.score).to eq(21)
-        end
-      end
-
-      context "two face cards" do
-        it "returns 20" do
-          hand = Hand.new(['Q♥', 'J♥'])
-          hand.face_up
-          expect(hand.score).to eq(20)
-        end
-      end
-
-      context "initial dealer hand" do
-        it "returns the score of the first card only" do
-          hand = Hand.new
-          hand << Card.new('Q♥').face_up
-          hand << Card.new('J♥')
-          expect(hand.score).to eq(10)
-        end
-      end
-
       context "hand of one card" do
         it "returns the value of a card" do
           card_values = {
@@ -66,6 +40,23 @@ module Blackjack
             hand << Card.new(code).face_up
             expect(hand.score).to be value
           end
+        end
+      end
+
+      context "two cards" do
+        it "returns sum of the cards values" do
+          two = Card.new('2♥').face_up
+          three = Card.new('3♥').face_up
+          hand = Hand.new([two, three])
+          expect(hand.score).to eq(5)
+        end
+      end
+
+      context "face-down card" do
+        it "returns 0" do
+          face_down_card = Card.new('J♥')
+          hand = Hand.new([face_down_card])
+          expect(hand.score).to eq(0)
         end
       end
     end

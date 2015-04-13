@@ -20,20 +20,19 @@ module Blackjack
     end
 
     def score
-      @cards.reduce(0) do |score, card|
-        if card.face_down?
-          value = 0
-        else
-          value = case card.rank
-                  when 'A' then 11
-                  when 'K', 'Q', 'J', 'T' then 10
-                  when '2'..'9' then card.rank.to_i
-                  else raise Exception.new("Unknown card rank '#{card.rank}'.")
-                  end
-        end
+      @cards
+        .find_all { |card| card.face_up? }
+        .reduce(0) do |score, card|
+          value =
+            case card.rank
+            when 'A' then 11
+            when 'K', 'Q', 'J', 'T' then 10
+            when '2'..'9' then card.rank.to_i
+            else raise Exception.new("Unknown card rank '#{card.rank}'.")
+            end
 
-        score + value
-      end
+          score + value
+        end
     end
 
     def to_s
