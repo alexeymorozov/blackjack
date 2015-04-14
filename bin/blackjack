@@ -7,3 +7,6 @@ deck = Blackjack::Deck.random_deck
 game = Blackjack::Game.new(STDOUT)
 string_deck = deck.map {|card| card.face_up }.join(' ')
 game.start(string_deck)
+while action = gets.chomp
+  game.send(action)
+end
