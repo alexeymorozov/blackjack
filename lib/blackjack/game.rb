@@ -21,6 +21,18 @@ module Blackjack
       evaluate_turn
     end
 
+    def stand
+      resolve_dealer_hand
+
+      show_hands
+
+      if @dealer_hand.busted?
+        send_win
+      else
+        show_result
+      end
+    end
+
     private
 
     def welcome
@@ -51,18 +63,6 @@ module Blackjack
       else
         show_hands
         prompt_for_action
-      end
-    end
-
-    def stand
-      resolve_dealer_hand
-
-      show_hands
-
-      if @dealer_hand.busted?
-        send_win
-      else
-        show_result
       end
     end
 

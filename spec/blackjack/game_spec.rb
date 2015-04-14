@@ -121,5 +121,13 @@ module Blackjack
         end
       end
     end
+
+    describe "#stand" do
+      it "shows result" do
+          game.start_from_saving('', 'T♥ J♥', 'T♦ A♦')
+          expect(printer).to receive(:puts).with("You loose!")
+          game.stand
+      end
+    end
   end
 end

@@ -10,6 +10,7 @@ Feature: player stands
     Given the player hand is "<player_hand>"
     And the dealer hand is "<given_dealer_hand>"
     And the deck is "<deck>"
+    And the game is started
     When I stand
     Then I should see "Dealer's hand: <final_dealer_hand>. Score: <dealer_score>."
     And I should see "Your hand: <player_hand>. Score: <player_score>."
