@@ -56,8 +56,14 @@ module Blackjack
 
     def stand
       resolve_dealer_hand
+
       show_hands
-      show_result
+
+      if @dealer_hand.busted?
+        send_win
+      else
+        show_result
+      end
     end
 
     def resolve_dealer_hand
