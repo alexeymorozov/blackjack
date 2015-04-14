@@ -57,7 +57,12 @@ module Blackjack
 
     def stand
       @dealer_hand.face_up
+      if @dealer_hand.score < 17
+        @dealer_hand << @deck.pop.face_up
+      end
+
       show_hands
+
       if @dealer_hand.score < 21
         send_win
       else

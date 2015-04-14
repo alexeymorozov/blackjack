@@ -80,6 +80,14 @@ module Blackjack
           game.hit
         end
       end
+
+      context "the player has 21 points after hitting and the dealer has 16 points" do
+        it "gives the dealer a card until he has at least 17" do
+          game.start_from_saving('8♥ 4♦', '6♥ 7♥', 'T♦ 6♦')
+          expect(printer).to receive(:puts).with("Dealer's hand: T♦ 6♦ 4♦. Score: 20.")
+          game.hit
+        end
+      end
     end
   end
 end
