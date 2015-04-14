@@ -51,28 +51,34 @@ module Blackjack
         stand
       else
         show_hands
-        prompts_for_action
+        prompt_for_action
       end
     end
 
     def stand
-      @dealer_hand.face_up
-      if @dealer_hand.score < 17
-        @dealer_hand << @deck.pop.face_up
-      end
-
+      resolve_dealer_hand
       show_hands
+      show_result
+    end
 
-      if @dealer_hand.score < 21
-        send_win
-      else
-        send_push
+    def resolve_dealer_hand
+      @dealer_hand.face_up
+      while @dealer_hand.score < 17
+        @dealer_hand << @deck.pop.face_up
       end
     end
 
     def show_hands
       @printer.puts("Dealer's hand: #{@dealer_hand}. Score: #{@dealer_hand.score}.")
       @printer.puts("Your hand: #{@player_hand}. Score: #{@player_hand.score}.")
+    end
+
+    def show_result
+      if @dealer_hand.score < 21
+        send_win
+      else
+        send_push
+      end
     end
 
     def send_win
@@ -83,7 +89,7 @@ module Blackjack
       @printer.puts("You push!")
     end
 
-    def prompts_for_action
+    def prompt_for_action
       @printer.puts("Enter action:")
     end
   end

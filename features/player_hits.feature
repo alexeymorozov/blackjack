@@ -22,11 +22,12 @@ Feature: player hits
     And I should see "<result>"
 
     Scenarios: hit
-      | deck  | given_player_hand | final_player_hand | player_score | given_dealer_hand | final_dealer_hand | dealer_score | result        |
-      | 4♥    | 2♥ 3♥             | 2♥ 3♥ 4♥          | 9            | 2♦ 3♦             | 2♦ ?              | 2            | Enter action: |
-      | 8♥    | 6♥ 7♥             | 6♥ 7♥ 8♥          | 21           | T♦ 7♦             | T♦ 7♦             | 17           | You win!      |
-      | 8♥    | 6♥ 7♥             | 6♥ 7♥ 8♥          | 21           | T♦ K♦             | T♦ K♦             | 20           | You win!      |
-      | 8♥ 4♦ | 6♥ 7♥             | 6♥ 7♥ 8♥          | 21           | T♦ 6♦             | T♦ 6♦ 4♦          | 20           | You win!      |
-      | 8♥ 5♦ | 6♥ 7♥             | 6♥ 7♥ 8♥          | 21           | T♦ 6♦             | T♦ 6♦ 5♦          | 21           | You push!     |
-      | 8♥    | 6♥ 7♥             | 6♥ 7♥ 8♥          | 21           | T♦ A♦             | T♦ A♦             | 21           | You loose!    |
-      | 9♥    | 6♥ 7♥             | 6♥ 7♥ 9♥          | 22           | 2♦ 3♦             | 2♦ ?              | 21           | You loose!    |
+      | deck     | given_player_hand | final_player_hand | player_score | given_dealer_hand | final_dealer_hand | dealer_score | result        |
+      | 4♥       | 2♥ 3♥             | 2♥ 3♥ 4♥          | 9            | 2♦ 3♦             | 2♦ ?              | 2            | Enter action: |
+      | 8♥       | 6♥ 7♥             | 6♥ 7♥ 8♥          | 21           | T♦ 7♦             | T♦ 7♦             | 17           | You win!      |
+      | 8♥       | 6♥ 7♥             | 6♥ 7♥ 8♥          | 21           | T♦ K♦             | T♦ K♦             | 20           | You win!      |
+      | 8♥ 4♦    | 6♥ 7♥             | 6♥ 7♥ 8♥          | 21           | T♦ 6♦             | T♦ 6♦ 4♦          | 20           | You win!      |
+      | 8♥ 3♦ 2♦ | 6♥ 7♥             | 6♥ 7♥ 8♥          | 21           | 7♦ 6♦             | 7♦ 6♦ 3♦ 2♦       | 18           | You win!      |
+      | 8♥ 5♦    | 6♥ 7♥             | 6♥ 7♥ 8♥          | 21           | T♦ 6♦             | T♦ 6♦ 5♦          | 21           | You push!     |
+      | 8♥       | 6♥ 7♥             | 6♥ 7♥ 8♥          | 21           | T♦ A♦             | T♦ A♦             | 21           | You loose!    |
+      | 9♥       | 6♥ 7♥             | 6♥ 7♥ 9♥          | 22           | 2♦ 3♦             | 2♦ ?              | 21           | You loose!    |
