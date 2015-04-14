@@ -23,6 +23,7 @@ Feature: player starts game
     Scenarios: blackjacks
       | deck        | player_hand | player_score | dealer_hand | dealer_score | result    |
       | A♥ Q♦ J♥ J♦ | A♥ J♥       | 21           | Q♦ J♦       | 20           | You win!  |
+      | A♥ T♦ J♥ 6♦ | A♥ J♥       | 21           | T♦ 6♦       | 16           | You win! |
       | A♥ A♦ J♥ J♦ | A♥ J♥       | 21           | A♦ J♦       | 21           | You push! |
 
     Scenarios: player has less than 21

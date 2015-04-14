@@ -27,6 +27,11 @@ module Blackjack
             expect(printer).to receive(:puts).with("You win!")
             game.start("A♥ Q♦ J♥ J♦")
           end
+
+          it "gives the dealer no more cards" do
+            expect(printer).to receive(:puts).with("Dealer's hand: T♦ 6♦. Score: 16.")
+            game.start("A♥ T♦ J♥ 6♦")
+          end
         end
 
         context "the player and dealer both have blackjacks" do

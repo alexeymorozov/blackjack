@@ -68,7 +68,7 @@ module Blackjack
 
     def resolve_dealer_hand
       @dealer_hand.face_up
-      while !@dealer_hand.full?
+      while !@dealer_hand.full? && !@player_hand.blackjack?
         @dealer_hand << @deck.pop.face_up
       end
     end
