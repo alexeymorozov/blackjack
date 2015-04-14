@@ -41,18 +41,18 @@ module Blackjack
     end
 
     def <=>(other)
-      if blackjack? && other.blackjack?
+      if has_blackjack? && other.has_blackjack?
         0
-      elsif blackjack?
+      elsif has_blackjack?
         1
-      elsif other.blackjack?
+      elsif other.has_blackjack?
         -1
       else
         score <=> other.score
       end
     end
 
-    def blackjack?
+    def has_blackjack?
       score == 21 && @cards.size == 2
     end
 
