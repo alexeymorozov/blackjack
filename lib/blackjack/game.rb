@@ -70,8 +70,10 @@ module Blackjack
     end
 
     def show_result
-      if @dealer_hand.score < 21
+      if @player_hand > @dealer_hand
         send_win
+      elsif @player_hand < @dealer_hand
+        send_loss
       else
         send_push
       end
@@ -79,6 +81,10 @@ module Blackjack
 
     def send_win
       @printer.puts("You win!")
+    end
+
+    def send_loss
+      @printer.puts("You loose!")
     end
 
     def send_push

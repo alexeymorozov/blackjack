@@ -1,5 +1,7 @@
 module Blackjack
   class Hand
+    include Comparable
+
     def self.create_player_hand_from_string(card_codes)
       cards = card_codes.split.map { |code| Card.new(code).face_up }
       self.new(cards)
@@ -32,6 +34,22 @@ module Blackjack
 
     def full?
       score == 21
+    end
+
+    def <=>(other)
+      if blackjack? && other.blackjack?
+        0
+      elsif blackjack?
+        1
+      elsif other.blackjack?
+        -1
+      else
+        score <=> other.score
+      end
+    end
+
+    def blackjack?
+      score == 21 && @cards.size == 2
     end
 
     def score
