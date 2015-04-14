@@ -59,9 +59,9 @@ module Blackjack
       @dealer_hand.face_up
       show_hands
       if @dealer_hand.score < 21
-        sends_win
+        send_win
       else
-        sends_push
+        send_push
       end
     end
 
@@ -70,11 +70,11 @@ module Blackjack
       @printer.puts("Your hand: #{@player_hand}. Score: #{@player_hand.score}.")
     end
 
-    def sends_win
+    def send_win
       @printer.puts("You win!")
     end
 
-    def sends_push
+    def send_push
       @printer.puts("You push!")
     end
 
