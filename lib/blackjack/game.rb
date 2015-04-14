@@ -23,14 +23,7 @@ module Blackjack
 
     def stand
       resolve_dealer_hand
-
-      show_hands
-
-      if @dealer_hand.busted?
-        send_win
-      else
-        show_result
-      end
+      finish_round
     end
 
     private
@@ -56,13 +49,11 @@ module Blackjack
 
     def evaluate_turn
       if @player_hand.busted?
-        show_hands
-        send_loss
+        finish_round
       elsif @player_hand.full?
         stand
       else
-        show_hands
-        prompt_for_action
+        continue_round
       end
     end
 
@@ -73,19 +64,33 @@ module Blackjack
       end
     end
 
-    def show_hands
-      @printer.puts("Dealer's hand: #{@dealer_hand}. Score: #{@dealer_hand.score}.")
-      @printer.puts("Your hand: #{@player_hand}. Score: #{@player_hand.score}.")
+    def finish_round
+      show_hands
+      show_result
+    end
+
+    def continue_round
+      show_hands
+      prompt_for_action
     end
 
     def show_result
-      if @player_hand > @dealer_hand
+      if @player_hand.busted?
+        send_loss
+      elsif @dealer_hand.busted?
+        send_win
+      elsif @player_hand > @dealer_hand
         send_win
       elsif @player_hand < @dealer_hand
         send_loss
       else
         send_push
       end
+    end
+
+    def show_hands
+      @printer.puts("Dealer's hand: #{@dealer_hand}. Score: #{@dealer_hand.score}.")
+      @printer.puts("Your hand: #{@player_hand}. Score: #{@player_hand.score}.")
     end
 
     def send_win
