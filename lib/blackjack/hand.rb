@@ -30,6 +30,10 @@ module Blackjack
       end
     end
 
+    def full?
+      score == 21
+    end
+
     def score
       face_up_cards = @cards.find_all { |card| card.face_up? }
 

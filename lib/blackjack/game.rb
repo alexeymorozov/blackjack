@@ -7,7 +7,7 @@ module Blackjack
     def start_from_saving(deck, player_hand, dealer_hand)
       @deck = Deck.create_from_string(deck)
       @player_hand = Hand.create_player_hand_from_string(player_hand)
-      @dealer_hand = Hand.create_dealer_hand_from_string(dealer_hand)
+      @dealer_hand = DealerHand.create_dealer_hand_from_string(dealer_hand)
     end
 
     def start(deck)
@@ -27,14 +27,10 @@ module Blackjack
       @printer.puts('Welcome to Blackjack!')
     end
 
-    def player_has_enough
-      @player_hand.score == 21
-    end
-
     def initial_deal(deck)
-      @deck = deck.split.reverse.map { |code| Card.new(code) }
+      @deck = Deck.create_from_string(deck)
       @player_hand = Hand.new
-      @dealer_hand = Hand.new
+      @dealer_hand = DealerHand.new
       hands = [@player_hand, @dealer_hand]
 
       2.times do |i|
@@ -47,7 +43,7 @@ module Blackjack
     end
 
     def evaluate_turn
-      if player_has_enough
+      if @player_hand.full?
         stand
       else
         show_hands
@@ -63,7 +59,7 @@ module Blackjack
 
     def resolve_dealer_hand
       @dealer_hand.face_up
-      while @dealer_hand.score < 17
+      while !@dealer_hand.full?
         @dealer_hand << @deck.pop.face_up
       end
     end
