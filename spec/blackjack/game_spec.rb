@@ -104,6 +104,14 @@ module Blackjack
           game.hit
         end
       end
+
+      context "the player has 22 points after hitting" do
+        it "sends that the player looses" do
+          game.start_from_saving('9♥', '6♥ 7♥', '2♦ 3♦')
+          expect(printer).to receive(:puts).with("You loose!")
+          game.hit
+        end
+      end
     end
   end
 end

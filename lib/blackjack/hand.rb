@@ -32,6 +32,10 @@ module Blackjack
       end
     end
 
+    def busted?
+      score > 21
+    end
+
     def full?
       score == 21
     end

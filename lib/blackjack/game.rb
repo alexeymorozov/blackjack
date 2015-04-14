@@ -43,7 +43,10 @@ module Blackjack
     end
 
     def evaluate_turn
-      if @player_hand.full?
+      if @player_hand.busted?
+        show_hands
+        send_loss
+      elsif @player_hand.full?
         stand
       else
         show_hands
