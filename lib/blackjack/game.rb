@@ -13,18 +13,12 @@ module Blackjack
     def start(deck)
       welcome
       initial_deal(deck)
-      if player_has_blackjack
-        stand
-      else
-        show_hands
-        prompts_for_action
-      end
+      evaluate_turn
     end
 
     def hit
       @player_hand << @deck.pop.face_up
-      show_hands
-      prompts_for_action
+      evaluate_turn
     end
 
     private
@@ -33,7 +27,7 @@ module Blackjack
       @printer.puts('Welcome to Blackjack!')
     end
 
-    def player_has_blackjack
+    def player_has_enough
       @player_hand.score == 21
     end
 
@@ -49,6 +43,15 @@ module Blackjack
           card.face_up if hand == @player_hand || i == 0
           hand << card
         end
+      end
+    end
+
+    def evaluate_turn
+      if player_has_enough
+        stand
+      else
+        show_hands
+        prompts_for_action
       end
     end
 
