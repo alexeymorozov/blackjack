@@ -57,29 +57,21 @@ module Blackjack
     end
 
     def score
-      face_up_cards = @cards.find_all { |card| card.face_up? }
+      aces.reduce(no_ace_bonus_score) do |score, card|
+        score + Card::ACE_BONUS > 21 ? score : score + Card::ACE_BONUS
+      end
+    end
 
-      no_ace_bonus_score = face_up_cards
-        .reduce(0) do |score, card|
-          value =
-            case card.rank
-            when 'A' then 1
-            when 'K', 'Q', 'J', 'T' then 10
-            when '2'..'9' then card.rank.to_i
-            else raise Exception.new("Unknown card rank '#{card.rank}'.")
-            end
+    def no_ace_bonus_score
+      upcards.reduce(0) { |score, card| score + card.value }
+    end
 
-          score + value
-        end
+    def aces
+      upcards.find_all(&:ace?)
+    end
 
-      full_score = face_up_cards
-        .find_all { |card| card.rank == 'A' }
-        .reduce(no_ace_bonus_score) do |score, card|
-          bonus = 10
-          score + bonus > 21 ? score : score + bonus
-        end
-
-      full_score
+    def upcards
+      @cards.find_all { |card| card.face_up? }
     end
 
     def to_s
