@@ -31,6 +31,14 @@ Feature: player starts round
       | 1.5 | 999          | 1           |
       | 10  | 990          | 10          |
 
+  Scenario: win with a blackjack
+    Given I am not yet playing
+    And the player money is "900"
+    And the bet is "100"
+    And the deck is "A♥ 2♦ J♥ 3♦"
+    When I start a new round
+    Then I should see "Your money: 1150."
+
   Scenario Outline: start round
     Given I am not yet playing
     And the deck is "<deck>"

@@ -66,6 +66,11 @@ module Blackjack
             game.start_round(1, "A♥ Q♦ J♥ J♦")
           end
 
+          it "returns the bet and pays at 3:2" do
+          expect(printer).to receive(:puts).with("Your money: 1150.")
+            game.start_round(100, "A♥ 2♦ J♥ 3♦")
+          end
+
           it "gives the dealer no more cards" do
             expect(printer).to receive(:puts).with("Dealer's hand: T♦ 6♦. Score: 16.")
             game.start_round(1, "A♥ T♦ J♥ 6♦")
@@ -196,7 +201,7 @@ module Blackjack
       end
 
       context "the player wins" do
-        it "returns the bet and pays 1:1" do
+        it "returns the bet and pays at 1:1" do
           game.start_from_saving('', 'T♥ J♥', 'T♦ 7♦', 100, 900)
           expect(printer).to receive(:puts).with("Your money: 1100.")
           game.stand

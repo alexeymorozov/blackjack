@@ -27,15 +27,15 @@ Feature: player stands
   Scenario Outline: bets
     Given the player hand is "<player_hand>"
     And the dealer hand is "<dealer_hand>"
-    And the player money is "<given_player_money>"
-    And the bet is "<bet>"
+    And the player money is "900"
+    And the bet is "100"
     And the deck is ""
     And the game is started
     When I stand
     Then I should see "Your money: <player_money>."
 
     Scenarios: bets
-      | given_player_money | bet | player_hand | player_score | dealer_hand | dealer_score | player_money |
-      | 900                | 100 | T♥ J♥       | 20           | T♦ A♦       | 21           | 900          |
-      | 900                | 100 | T♥ J♥       | 20           | T♦ J♦       | 20           | 1000         |
-      | 900                | 100 | T♥ J♥       | 20           | T♦ 7♦       | 17           | 1100         |
+      | player_hand | player_score | dealer_hand | dealer_score | player_money |
+      | T♥ J♥       | 20           | T♦ A♦       | 21           | 900          |
+      | T♥ J♥       | 20           | T♦ J♦       | 20           | 1000         |
+      | T♥ J♥       | 20           | T♦ 7♦       | 17           | 1100         |

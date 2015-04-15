@@ -133,7 +133,7 @@ module Blackjack
 
     def send_win
       @printer.puts("You win!")
-      @player_money += @bet * 2
+      @player_money += (@bet * (@player_hand.has_blackjack? ? 2.5 : 2)).to_i
       @bet = 0
       show_money
     end
