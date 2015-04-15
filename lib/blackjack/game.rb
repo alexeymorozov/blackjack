@@ -41,7 +41,7 @@ module Blackjack
       2.times do |i|
         hands.each do |hand|
           card = @deck.pop
-          card.face_up if hand == @player_hand || i == 0
+          card.face_up if hand.equal?(@player_hand) || i == 0
           hand << card
         end
       end

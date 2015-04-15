@@ -53,6 +53,13 @@ module Blackjack
           game.start("Q♥ A♦ J♥ J♦")
         end
       end
+
+      context "the player score equals the value of the dealer's first card" do
+        it "doesn't flip the dealer's second card face up" do
+          expect(printer).to receive(:puts).with("Dealer's hand: 5♦ ?. Score: 5.")
+          game.start("2♥ 5♦ 3♥ J♦")
+        end
+      end
     end
 
     describe "#hit" do
