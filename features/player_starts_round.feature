@@ -11,6 +11,26 @@ Feature: player starts round
     - face cards (kings, queens, jacks): 10 points
     - all other cards: their numeric value
 
+  Scenario Outline: different bets
+    Given I am not yet playing
+    And the bet is "<bet>"
+    And the deck is "2♥ 2♦ 3♥ 3♦"
+    When I start a new round
+    Then I should see "Your money: <player_money>. Bet: <integer_bet>."
+
+    Scenarios: incorrect bets
+      | bet  | player_money | integer_bet |
+      | -1   | 999          | 1           |
+      | 0    | 999          | 1           |
+      | 0.5  | 999          | 1           |
+      | 1500 | 0            | 1000        |
+
+    Scenarios: correct bets
+      | bet | player_money | integer_bet |
+      | 1   | 999          | 1           |
+      | 1.5 | 999          | 1           |
+      | 10  | 990          | 10          |
+
   Scenario Outline: start round
     Given I am not yet playing
     And the deck is "<deck>"

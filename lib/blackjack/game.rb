@@ -1,7 +1,11 @@
 module Blackjack
   class Game
+    INITIAL_PLAYER_MONEY = 1000
+    MINIMUM_BET = 1
+
     def initialize(printer)
       @printer = printer
+      @player_money = INITIAL_PLAYER_MONEY
     end
 
     def start_from_saving(deck, player_hand, dealer_hand)
@@ -15,7 +19,8 @@ module Blackjack
       prompt_for_bet
     end
 
-    def start_round(deck)
+    def start_round(bet, deck)
+      bet(bet)
       initial_deal(deck)
       evaluate_turn
     end
@@ -38,6 +43,21 @@ module Blackjack
 
     def prompt_for_bet
       @printer.puts('Enter bet:')
+    end
+
+    def bet(bet)
+      integer_bet = bet.to_i
+      if integer_bet < MINIMUM_BET
+        @bet = MINIMUM_BET
+      elsif integer_bet > @player_money
+        @bet = @player_money
+      else
+        @bet = integer_bet
+      end
+
+      @player_money -= @bet
+
+      show_bet
     end
 
     def initial_deal(deck)
@@ -94,6 +114,10 @@ module Blackjack
       else
         send_push
       end
+    end
+
+    def show_bet
+      @printer.puts("Your money: #{@player_money}. Bet: #{@bet}.")
     end
 
     def show_hands

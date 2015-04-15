@@ -1,6 +1,10 @@
 Given("I am not yet playing") do
 end
 
+Given(/^the bet is "(.*?)"$/) do |bet|
+  @bet = bet
+end
+
 Given(/^the deck is "(.*?)"$/) do |deck|
   @deck = deck
 end
@@ -24,8 +28,9 @@ Given(/^the game is started$/) do
 end
 
 When(/^I start a new round$/) do
+  @bet ||= 1
   @game = Blackjack::Game.new(printer)
-  @game.start_round(@deck)
+  @game.start_round(@bet, @deck)
 end
 
 When(/^I hit$/) do
