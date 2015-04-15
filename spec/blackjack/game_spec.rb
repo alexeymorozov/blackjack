@@ -11,6 +11,11 @@ module Blackjack
         game.start
       end
 
+      it "sends the player's money" do
+        expect(printer).to receive(:puts).with("Your money: 1000.")
+        game.start
+      end
+
       it "prompts for the first bet" do
         expect(printer).to receive(:puts).with('Enter bet:')
         game.start

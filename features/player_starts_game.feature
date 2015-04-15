@@ -8,4 +8,5 @@ Feature: player starts game
     Given I am not yet playing
     When I start a new game
     Then I should see "Welcome to Blackjack!"
+    And I should see "Your money: 1000."
     And I should see "Enter bet:"

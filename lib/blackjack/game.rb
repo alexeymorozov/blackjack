@@ -18,6 +18,7 @@ module Blackjack
 
     def start
       welcome
+      show_money
       prompt_for_bet
     end
 
