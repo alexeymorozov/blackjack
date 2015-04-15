@@ -13,8 +13,8 @@ module Blackjack
     def start_from_saving(deck, player_hand, dealer_hand, bet = MINIMUM_BET, player_money = INITIAL_PLAYER_MONEY - MINIMUM_BET)
       @deck = Deck.create_from_string(deck)
       @player_hand = Hand.create_player_hand_from_string(player_hand)
+      @player_hand.bet = bet
       @dealer_hand = DealerHand.create_dealer_hand_from_string(dealer_hand)
-      @bet = bet
       @player_money = player_money
       @round_started = true
     end
@@ -32,13 +32,9 @@ module Blackjack
       @round_started = true
 
       begin
-        bet(bet)
+        initial_deal(deck, bet)
       rescue NoMoneyLeft
         return send_no_money_left
-      end
-
-      begin
-        initial_deal(deck)
       rescue EmptyDeck
         return send_no_cards_left
       end
@@ -93,27 +89,29 @@ module Blackjack
       @printer.puts("No money left. Game over!")
     end
 
-    def bet(bet)
+    def do_bet(bet_candidate)
       raise NoMoneyLeft if @player_money < MINIMUM_BET
-      integer_bet = bet.to_i
+      integer_bet = bet_candidate.to_i
       if integer_bet < MINIMUM_BET
-        @bet = MINIMUM_BET
+        bet = MINIMUM_BET
       elsif integer_bet > @player_money
-        @bet = @player_money
+        bet = @player_money
       else
-        @bet = integer_bet
+        bet = integer_bet
       end
 
-      @player_money -= @bet
+      @player_money -= bet
 
-      show_bet
+      bet
     end
 
-    def initial_deal(deck)
+    def initial_deal(deck, bet)
       @deck = deck ? Deck.create_from_string(deck) : @deck
-      @player_hand = Hand.new
+      @player_hand = Hand.new([], do_bet(bet))
       @dealer_hand = DealerHand.new
       hands = [@player_hand, @dealer_hand]
+
+      show_bet
 
       2.times do |i|
         hands.each do |hand|
@@ -167,7 +165,7 @@ module Blackjack
     end
 
     def show_bet
-      @printer.puts("Your money: #{@player_money}. Bet: #{@bet}.")
+      @printer.puts("Your money: #{@player_money}. Bet: #{@player_hand.bet}.")
     end
 
     def show_hands
@@ -181,21 +179,18 @@ module Blackjack
 
     def send_win
       @printer.puts("You win!")
-      @player_money += (@bet * (@player_hand.has_blackjack? ? 2.5 : 2)).to_i
-      @bet = 0
+      @player_money += (@player_hand.bet * (@player_hand.has_blackjack? ? 2.5 : 2)).to_i
       show_money
     end
 
     def send_loss
       @printer.puts("You loose!")
-      @bet = 0
       show_money
     end
 
     def send_push
       @printer.puts("You push!")
-      @player_money += @bet
-      @bet = 0
+      @player_money += @player_hand.bet
       show_money
     end
 

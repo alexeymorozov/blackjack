@@ -5,6 +5,8 @@ module Blackjack
     MAXIMUM_PLAYING_SCORE = 21
     COUNT_OF_CARDS_IN_BLACKJACK_HAND = 2
 
+    attr_accessor :bet
+
     def self.create_player_hand_from_string(card_codes)
       cards = card_codes.split.map { |code| Card.new(code).face_up }
       self.new(cards)
@@ -16,11 +18,13 @@ module Blackjack
       self.new(cards)
     end
 
-    def initialize(cards = [])
+    def initialize(cards = [], bet = 1)
       @cards = []
       cards.each do |card|
         receive(card)
       end
+
+      @bet = bet
     end
 
     def receive(card)
