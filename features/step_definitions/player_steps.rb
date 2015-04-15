@@ -33,9 +33,15 @@ Given(/^the game is started$/) do
   @game.start_from_saving(@deck, @player_hand, @dealer_hand, @bet, @player_money)
 end
 
+Given(/^the round has already been started$/) do
+  @game = Blackjack::Game.new(printer)
+  @game.start_round(1, "2♥ 2♦ 3♥ 3♦")
+end
+
 When(/^I start a new round$/) do
   @bet ||= 1
-  @game = Blackjack::Game.new(printer)
+  @deck ||= "2♥ 2♦ 3♥ 3♦"
+  @game ||= Blackjack::Game.new(printer)
   @game.start_round(@bet, @deck)
 end
 

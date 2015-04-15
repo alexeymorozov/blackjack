@@ -23,6 +23,8 @@ module Blackjack
     end
 
     def start_round(bet, deck)
+      return send_round_already_started if @round_started
+      @round_started = true
       bet(bet)
       initial_deal(deck)
       evaluate_turn
@@ -46,6 +48,10 @@ module Blackjack
 
     def prompt_for_bet
       @printer.puts('Enter bet:')
+    end
+
+    def send_round_already_started
+      @printer.puts("The round has already been started.")
     end
 
     def bet(bet)

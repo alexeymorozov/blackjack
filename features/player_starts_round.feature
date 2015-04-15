@@ -59,3 +59,8 @@ Feature: player starts round
       | Q♥ Q♦ J♥ J♦ | Q♥ J♥       | 20           | Q♦ ?        | 10           | Enter action: |
       | 3♥ Q♦ 2♥ J♦ | 3♥ 2♥       | 5            | Q♦ ?        | 10           | Enter action: |
       | A♥ Q♦ A♠ J♦ | A♥ A♠       | 12           | Q♦ ?        | 10           | Enter action: |
+
+  Scenario: start a new round twice in a row without ending one
+    Given the round has already been started
+    When I start a new round
+    Then I should see "The round has already been started."

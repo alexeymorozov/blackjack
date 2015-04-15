@@ -23,6 +23,14 @@ module Blackjack
     end
 
     describe "#start_round" do
+      context "the round has been already started" do
+        it "sends an error message" do
+          game.start_round(1, "2♥ 2♦ 3♥ 3♦")
+          expect(printer).to receive(:puts).with("The round has already been started.")
+          game.start_round(1, "2♥ 2♦ 3♥ 3♦")
+        end
+      end
+
       context "the bet is lower than the minimum bet" do
         it "chooses the minimum bet" do
           [-1, 0, 0.5].each do |bet|
