@@ -178,6 +178,30 @@ module Blackjack
           expect(printer).to receive(:puts).with("You loose!")
           game.stand
       end
+
+      context "the player looses" do
+        it "doesn't return the bet" do
+            game.start_from_saving('', 'T♥ J♥', 'T♦ A♦', 100, 900)
+            expect(printer).to receive(:puts).with("Your money: 900.")
+            game.stand
+        end
+      end
+
+      context "the player pushes" do
+        it "returns the bet" do
+          game.start_from_saving('', 'T♥ J♥', 'T♦ J♦', 100, 900)
+          expect(printer).to receive(:puts).with("Your money: 1000.")
+          game.stand
+        end
+      end
+
+      context "the player wins" do
+        it "returns the bet and pays 1:1" do
+          game.start_from_saving('', 'T♥ J♥', 'T♦ 7♦', 100, 900)
+          expect(printer).to receive(:puts).with("Your money: 1100.")
+          game.stand
+        end
+      end
     end
   end
 end

@@ -16,10 +16,26 @@ Feature: player stands
     And I should see "Your hand: <player_hand>. Score: <player_score>."
     And I should see "<result>"
 
-    Scenarios: hit
+    Scenarios: stand
       | player_hand | player_score | given_dealer_hand | deck  | final_dealer_hand | dealer_score | result        |
       | T♥ J♥       | 20           | T♦ A♦             |       | T♦ A♦             | 21           | You loose!    |
       | T♥ J♥       | 20           | T♦ 7♦             |       | T♦ 7♦             | 17           | You win!      |
       | T♥ J♥       | 20           | T♦ 6♦             | 4♦    | T♦ 6♦ 4♦          | 20           | You push!     |
       | T♥ J♥       | 20           | T♦ 6♦             | 5♦    | T♦ 6♦ 5♦          | 21           | You loose!    |
       | T♥ J♥       | 20           | T♦ 6♦             | 7♦    | T♦ 6♦ 7♦          | 23           | You win!      |
+
+  Scenario Outline: bets
+    Given the player hand is "<player_hand>"
+    And the dealer hand is "<dealer_hand>"
+    And the player money is "<given_player_money>"
+    And the bet is "<bet>"
+    And the deck is ""
+    And the game is started
+    When I stand
+    Then I should see "Your money: <player_money>."
+
+    Scenarios: bets
+      | given_player_money | bet | player_hand | player_score | dealer_hand | dealer_score | player_money |
+      | 900                | 100 | T♥ J♥       | 20           | T♦ A♦       | 21           | 900          |
+      | 900                | 100 | T♥ J♥       | 20           | T♦ J♦       | 20           | 1000         |
+      | 900                | 100 | T♥ J♥       | 20           | T♦ 7♦       | 17           | 1100         |

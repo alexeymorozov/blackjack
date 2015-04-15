@@ -8,10 +8,12 @@ module Blackjack
       @player_money = INITIAL_PLAYER_MONEY
     end
 
-    def start_from_saving(deck, player_hand, dealer_hand)
+    def start_from_saving(deck, player_hand, dealer_hand, bet = MINIMUM_BET, player_money = INITIAL_PLAYER_MONEY - MINIMUM_BET)
       @deck = Deck.create_from_string(deck)
       @player_hand = Hand.create_player_hand_from_string(player_hand)
       @dealer_hand = DealerHand.create_dealer_hand_from_string(dealer_hand)
+      @bet = bet
+      @player_money = player_money
     end
 
     def start
@@ -125,16 +127,28 @@ module Blackjack
       @printer.puts("Your hand: #{@player_hand}. Score: #{@player_hand.score}.")
     end
 
+    def show_money
+      @printer.puts("Your money: #{@player_money}.")
+    end
+
     def send_win
       @printer.puts("You win!")
+      @player_money += @bet * 2
+      @bet = 0
+      show_money
     end
 
     def send_loss
       @printer.puts("You loose!")
+      @bet = 0
+      show_money
     end
 
     def send_push
       @printer.puts("You push!")
+      @player_money += @bet
+      @bet = 0
+      show_money
     end
 
     def prompt_for_action
