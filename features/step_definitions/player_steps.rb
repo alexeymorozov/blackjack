@@ -18,9 +18,9 @@ Given(/^the game is started$/) do
   @game.start_from_saving(@deck, @player_hand, @dealer_hand)
 end
 
-When(/^I start a new game$/) do
+When(/^I start a new round$/) do
   @game = Blackjack::Game.new(printer)
-  @game.start(@deck)
+  @game.start_round(@deck)
 end
 
 When(/^I hit$/) do

@@ -1,6 +1,6 @@
-Feature: player starts game
+Feature: player starts round
 
-  The player starts the game. The game tells whether the player wins, pushes,
+  The player starts the round. The game tells whether the player wins, pushes,
   or can continue the round.
 
   If the player gets 21 points, he either win or push. If his score is less
@@ -11,10 +11,10 @@ Feature: player starts game
     - face cards (kings, queens, jacks): 10 points
     - all other cards: their numeric value
 
-  Scenario Outline: start game
+  Scenario Outline: start round
     Given I am not yet playing
     And the deck is "<deck>"
-    When I start a new game
+    When I start a new round
     Then I should see "Welcome to Blackjack!"
     And I should see "Dealer's hand: <dealer_hand>. Score: <dealer_score>."
     And I should see "Your hand: <player_hand>. Score: <player_score>."

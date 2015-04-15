@@ -10,7 +10,7 @@ module Blackjack
       @dealer_hand = DealerHand.create_dealer_hand_from_string(dealer_hand)
     end
 
-    def start(deck)
+    def start_round(deck)
       welcome
       initial_deal(deck)
       evaluate_turn

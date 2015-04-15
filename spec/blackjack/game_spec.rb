@@ -5,39 +5,39 @@ module Blackjack
     let(:printer) { double('printer').as_null_object }
     let(:game) { Game.new(printer) }
 
-    describe "#start" do
+    describe "#start_round" do
       it "sends a welcome message" do
         expect(printer).to receive(:puts).with('Welcome to Blackjack!')
-        game.start("A♥ Q♦ J♥ J♦")
+        game.start_round("A♥ Q♦ J♥ J♦")
       end
 
       it "sends the player's hand and score" do
         expect(printer).to receive(:puts).with("Your hand: A♥ J♥. Score: 21.")
-        game.start("A♥ Q♦ J♥ J♦")
+        game.start_round("A♥ Q♦ J♥ J♦")
       end
 
       context "blackjacks" do
         it "sends the dealer's hand face up and score" do
             expect(printer).to receive(:puts).with("Dealer's hand: Q♦ J♦. Score: 20.")
-            game.start("A♥ Q♦ J♥ J♦")
+            game.start_round("A♥ Q♦ J♥ J♦")
         end
 
         context "only the player has a blackjack" do
           it "sends that the player wins" do
             expect(printer).to receive(:puts).with("You win!")
-            game.start("A♥ Q♦ J♥ J♦")
+            game.start_round("A♥ Q♦ J♥ J♦")
           end
 
           it "gives the dealer no more cards" do
             expect(printer).to receive(:puts).with("Dealer's hand: T♦ 6♦. Score: 16.")
-            game.start("A♥ T♦ J♥ 6♦")
+            game.start_round("A♥ T♦ J♥ 6♦")
           end
         end
 
         context "the player and dealer both have blackjacks" do
           it "sends that the player pushes" do
             expect(printer).to receive(:puts).with("You push!")
-            game.start("A♥ A♦ J♥ J♦")
+            game.start_round("A♥ A♦ J♥ J♦")
           end
         end
       end
@@ -45,19 +45,19 @@ module Blackjack
       context "the player has less than 21 points" do
         it "sends the dealer's hand with the second card face down" do
           expect(printer).to receive(:puts).with("Dealer's hand: A♦ ?. Score: 11.")
-          game.start("Q♥ A♦ J♥ J♦")
+          game.start_round("Q♥ A♦ J♥ J♦")
         end
 
         it "prompts the player for the next action" do
           expect(printer).to receive(:puts).with("Enter action:")
-          game.start("Q♥ A♦ J♥ J♦")
+          game.start_round("Q♥ A♦ J♥ J♦")
         end
       end
 
       context "the player score equals the value of the dealer's first card" do
         it "doesn't flip the dealer's second card face up" do
           expect(printer).to receive(:puts).with("Dealer's hand: 5♦ ?. Score: 5.")
-          game.start("2♥ 5♦ 3♥ J♦")
+          game.start_round("2♥ 5♦ 3♥ J♦")
         end
       end
     end
