@@ -64,3 +64,8 @@ Feature: player starts round
     Given the round has already been started
     When I start a new round
     Then I should see "The round has already been started."
+
+  Scenario: start a new round after the previous one is finished
+    Given the round has been started and finished
+    When I start a new round
+    Then I should see "Enter action:"

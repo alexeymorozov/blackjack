@@ -104,6 +104,7 @@ module Blackjack
     def finish_round
       show_hands
       show_result
+      @round_started = false
     end
 
     def continue_round

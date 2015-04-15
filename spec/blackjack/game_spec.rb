@@ -31,6 +31,14 @@ module Blackjack
         end
       end
 
+      context "the round has been started, finished, and started again" do
+        it "prompts the player for the next action" do
+          game.start_round(1, "A♥ 2♦ J♥ 3♦")
+          expect(printer).to receive(:puts).with("Enter action:")
+          game.start_round(1, "2♥ 2♦ 3♥ 3♦")
+        end
+      end
+
       context "the bet is lower than the minimum bet" do
         it "chooses the minimum bet" do
           [-1, 0, 0.5].each do |bet|
