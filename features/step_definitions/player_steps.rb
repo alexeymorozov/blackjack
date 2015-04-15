@@ -51,6 +51,8 @@ When(/^I start a new round$/) do
   @bet ||= 1
   @deck ||= "2♥ 2♦ 3♥ 3♦"
   @game ||= Blackjack::Game.new(printer)
+  @player_money ||= 1000
+  @game.player_money = @player_money
   @game.start_round(@bet, @deck)
 end
 

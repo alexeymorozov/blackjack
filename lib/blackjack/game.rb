@@ -3,6 +3,8 @@ module Blackjack
     INITIAL_PLAYER_MONEY = 1000
     MINIMUM_BET = 1
 
+    attr_writer :player_money
+
     def initialize(printer)
       @printer = printer
       @player_money = INITIAL_PLAYER_MONEY
@@ -26,8 +28,19 @@ module Blackjack
     def start_round(bet, deck = nil)
       return send_round_already_started if @round_started
       @round_started = true
-      bet(bet)
-      initial_deal(deck)
+
+      begin
+        bet(bet)
+      rescue NoMoneyLeft
+        return send_no_money_left
+      end
+
+      begin
+        initial_deal(deck)
+      rescue EmptyDeck
+        return send_no_cards_left
+      end
+
       evaluate_turn
     end
 
@@ -61,7 +74,16 @@ module Blackjack
       @printer.puts("The round hasn't been started yet.")
     end
 
+    def send_no_cards_left
+      @printer.puts("No cards left in the deck. Game over!")
+    end
+
+    def send_no_money_left
+      @printer.puts("No money left. Game over!")
+    end
+
     def bet(bet)
+      raise NoMoneyLeft if @player_money < MINIMUM_BET
       integer_bet = bet.to_i
       if integer_bet < MINIMUM_BET
         @bet = MINIMUM_BET

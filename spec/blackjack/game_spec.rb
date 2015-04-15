@@ -23,6 +23,21 @@ module Blackjack
     end
 
     describe "#start_round" do
+      context "no cards left in the deck" do
+        it "sends an error message" do
+          expect(printer).to receive(:puts).with("No cards left in the deck. Game over!")
+          game.start_round(1, "")
+        end
+      end
+
+      context "no money left" do
+        it "sends an error message" do
+          expect(printer).to receive(:puts).with("No money left. Game over!")
+          game.player_money = 0
+          game.start_round(1, "2♥ 2♦ 3♥ 3♦")
+        end
+      end
+
       context "the round has been already started" do
         it "sends an error message" do
           game.start_round(1, "2♥ 2♦ 3♥ 3♦")

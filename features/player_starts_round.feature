@@ -33,7 +33,7 @@ Feature: player starts round
 
   Scenario: win with a blackjack
     Given I am not yet playing
-    And the player money is "900"
+    And the player money is "1000"
     And the bet is "100"
     And the deck is "A♥ 2♦ J♥ 3♦"
     When I start a new round
@@ -77,3 +77,13 @@ Feature: player starts round
     And the round has been started and finished
     When I start a new round without a deck
     Then I should see "Enter action:"
+
+  Scenario: not enough cards in the deck
+    Given the deck is ""
+    When I start a new round
+    Then I should see "No cards left in the deck. Game over!"
+
+  Scenario: not enough money to bet
+    Given the player money is "0"
+    When I start a new round
+    Then I should see "No money left. Game over!"
