@@ -10,6 +10,11 @@ module Blackjack
       @dealer_hand = DealerHand.create_dealer_hand_from_string(dealer_hand)
     end
 
+    def start
+      welcome
+      prompt_for_bet
+    end
+
     def start_round(deck)
       welcome
       initial_deal(deck)
@@ -30,6 +35,10 @@ module Blackjack
 
     def welcome
       @printer.puts('Welcome to Blackjack!')
+    end
+
+    def prompt_for_bet
+      @printer.puts('Enter bet:')
     end
 
     def initial_deal(deck)

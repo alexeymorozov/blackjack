@@ -13,6 +13,11 @@ Given(/^the dealer hand is "(.*?)"$/) do |card_codes|
   @dealer_hand = card_codes
 end
 
+When(/^I start a new game$/) do
+  @game = Blackjack::Game.new(printer)
+  @game.start
+end
+
 Given(/^the game is started$/) do
   @game = Blackjack::Game.new(printer)
   @game.start_from_saving(@deck, @player_hand, @dealer_hand)

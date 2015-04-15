@@ -5,6 +5,18 @@ module Blackjack
     let(:printer) { double('printer').as_null_object }
     let(:game) { Game.new(printer) }
 
+    describe "#start" do
+      it "sends a welcome message" do
+        expect(printer).to receive(:puts).with('Welcome to Blackjack!')
+        game.start
+      end
+
+      it "prompts for the first bet" do
+        expect(printer).to receive(:puts).with('Enter bet:')
+        game.start
+      end
+    end
+
     describe "#start_round" do
       it "sends a welcome message" do
         expect(printer).to receive(:puts).with('Welcome to Blackjack!')

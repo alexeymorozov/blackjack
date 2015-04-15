@@ -3,10 +3,13 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'blackjack'
 
-deck = Blackjack::Deck.create_standard_deck.shuffle!
 game = Blackjack::Game.new(STDOUT)
+game.start
+
+deck = Blackjack::Deck.create_standard_deck.shuffle!
 string_deck = deck.map {|card| card.face_up }.join(' ')
-game.start(string_deck)
+game.start_round(string_deck)
+
 while action = gets.chomp
   game.send(action)
 end
