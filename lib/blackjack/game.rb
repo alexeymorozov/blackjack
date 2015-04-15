@@ -16,7 +16,6 @@ module Blackjack
     end
 
     def start_round(deck)
-      welcome
       initial_deal(deck)
       evaluate_turn
     end

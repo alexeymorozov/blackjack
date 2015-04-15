@@ -18,11 +18,6 @@ module Blackjack
     end
 
     describe "#start_round" do
-      it "sends a welcome message" do
-        expect(printer).to receive(:puts).with('Welcome to Blackjack!')
-        game.start_round("A♥ Q♦ J♥ J♦")
-      end
-
       it "sends the player's hand and score" do
         expect(printer).to receive(:puts).with("Your hand: A♥ J♥. Score: 21.")
         game.start_round("A♥ Q♦ J♥ J♦")

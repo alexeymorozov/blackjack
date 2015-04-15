@@ -15,8 +15,7 @@ Feature: player starts round
     Given I am not yet playing
     And the deck is "<deck>"
     When I start a new round
-    Then I should see "Welcome to Blackjack!"
-    And I should see "Dealer's hand: <dealer_hand>. Score: <dealer_score>."
+    Then I should see "Dealer's hand: <dealer_hand>. Score: <dealer_score>."
     And I should see "Your hand: <player_hand>. Score: <player_score>."
     And I should see "<result>"
 
