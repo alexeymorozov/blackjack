@@ -2,6 +2,9 @@ module Blackjack
   class Hand
     include Comparable
 
+    MAXIMUM_PLAYING_SCORE = 21
+    COUNT_OF_CARDS_IN_BLACKJACK_HAND = 2
+
     def self.create_player_hand_from_string(card_codes)
       cards = card_codes.split.map { |code| Card.new(code).face_up }
       self.new(cards)
@@ -33,11 +36,11 @@ module Blackjack
     end
 
     def busted?
-      score > 21
+      score > MAXIMUM_PLAYING_SCORE
     end
 
     def full?
-      score == 21
+      score == MAXIMUM_PLAYING_SCORE
     end
 
     def <=>(other)
@@ -53,12 +56,12 @@ module Blackjack
     end
 
     def has_blackjack?
-      score == 21 && @cards.size == 2
+      score == MAXIMUM_PLAYING_SCORE && @cards.size == COUNT_OF_CARDS_IN_BLACKJACK_HAND
     end
 
     def score
       aces.reduce(no_ace_bonus_score) do |score, card|
-        score + Card::ACE_BONUS > 21 ? score : score + Card::ACE_BONUS
+        score + Card::ACE_BONUS > MAXIMUM_PLAYING_SCORE ? score : score + Card::ACE_BONUS
       end
     end
 
