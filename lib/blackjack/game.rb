@@ -26,6 +26,8 @@ module Blackjack
     end
 
     def start_round(bet, deck = nil)
+      return send_game_over if @game_over
+
       return send_round_already_started if @round_started
       @round_started = true
 
@@ -45,12 +47,15 @@ module Blackjack
     end
 
     def hit
+      return send_game_over if @game_over
       return send_round_not_started_yet unless @round_started
       @player_hand << @deck.pop.face_up
       evaluate_turn
     end
 
     def stand
+      return send_game_over if @game_over
+
       return send_round_not_started_yet unless @round_started
       resolve_dealer_hand
       finish_round
@@ -74,11 +79,17 @@ module Blackjack
       @printer.puts("The round hasn't been started yet.")
     end
 
+    def send_game_over
+      @printer.puts("The game is over.")
+    end
+
     def send_no_cards_left
+      @game_over = true
       @printer.puts("No cards left in the deck. Game over!")
     end
 
     def send_no_money_left
+      @game_over = true
       @printer.puts("No money left. Game over!")
     end
 

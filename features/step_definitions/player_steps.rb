@@ -47,6 +47,11 @@ Given(/^the round has been started and finished$/) do
   @game.start_round(1, @deck)
 end
 
+Given(/^the game is over$/) do
+  @game = Blackjack::Game.new(printer)
+  @game.start_round(1, "")
+end
+
 When(/^I start a new round$/) do
   @bet ||= 1
   @deck ||= "2♥ 2♦ 3♥ 3♦"

@@ -37,3 +37,8 @@ Feature: player hits
     Given the round hasn't been started
     When I hit
     Then I should see "The round hasn't been started yet."
+
+  Scenario: hit after the game is over
+    Given the game is over
+    When I hit
+    Then I should see "The game is over."

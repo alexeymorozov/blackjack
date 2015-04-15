@@ -44,3 +44,8 @@ Feature: player stands
     Given the round hasn't been started
     When I stand
     Then I should see "The round hasn't been started yet."
+
+  Scenario: stand after the game is over
+    Given the game is over
+    When I stand
+    Then I should see "The game is over."

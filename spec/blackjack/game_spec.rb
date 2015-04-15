@@ -38,6 +38,14 @@ module Blackjack
         end
       end
 
+      context "game is over" do
+        it "sends an error message" do
+          game.start_round(1, "")
+          expect(printer).to receive(:puts).with("The game is over.")
+          game.start_round(1)
+        end
+      end
+
       context "the round has been already started" do
         it "sends an error message" do
           game.start_round(1, "2♥ 2♦ 3♥ 3♦")
@@ -150,6 +158,14 @@ module Blackjack
     end
 
     describe "#hit" do
+      context "game is over" do
+        it "sends an error message" do
+          game.start_round(1, "")
+          expect(printer).to receive(:puts).with("The game is over.")
+          game.hit
+        end
+      end
+
       context "the round hasn't been started yet" do
         it "sends an error message" do
           expect(printer).to receive(:puts).with("The round hasn't been started yet.")
@@ -229,6 +245,14 @@ module Blackjack
     end
 
     describe "#stand" do
+      context "game is over" do
+        it "sends an error message" do
+          game.start_round(1, "")
+          expect(printer).to receive(:puts).with("The game is over.")
+          game.stand
+        end
+      end
+
       context "the round hasn't been started yet" do
         it "sends an error message" do
           expect(printer).to receive(:puts).with("The round hasn't been started yet.")

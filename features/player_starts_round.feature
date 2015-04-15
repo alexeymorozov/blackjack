@@ -87,3 +87,8 @@ Feature: player starts round
     Given the player money is "0"
     When I start a new round
     Then I should see "No money left. Game over!"
+
+  Scenario: start after the game is over
+    Given the game is over
+    When I start a new round
+    Then I should see "The game is over."
