@@ -39,6 +39,14 @@ module Blackjack
         end
       end
 
+      context "called without a deck" do
+        it "uses a deck from the previous round" do
+          game.start_round(1, "A♥ 2♦ J♠ 3♦ K♥ 4♦ T♠ 5♦")
+          expect(printer).to receive(:puts).with("Enter action:")
+          game.start_round(1)
+        end
+      end
+
       context "the bet is lower than the minimum bet" do
         it "chooses the minimum bet" do
           [-1, 0, 0.5].each do |bet|

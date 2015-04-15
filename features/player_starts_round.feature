@@ -50,7 +50,7 @@ Feature: player starts round
     Scenarios: blackjacks
       | deck        | player_hand | player_score | dealer_hand | dealer_score | result    |
       | A♥ Q♦ J♥ J♦ | A♥ J♥       | 21           | Q♦ J♦       | 20           | You win!  |
-      | A♥ T♦ J♥ 6♦ | A♥ J♥       | 21           | T♦ 6♦       | 16           | You win! |
+      | A♥ T♦ J♥ 6♦ | A♥ J♥       | 21           | T♦ 6♦       | 16           | You win!  |
       | A♥ A♦ J♥ J♦ | A♥ J♥       | 21           | A♦ J♦       | 21           | You push! |
 
     Scenarios: player has less than 21
@@ -66,6 +66,14 @@ Feature: player starts round
     Then I should see "The round has already been started."
 
   Scenario: start a new round after the previous one is finished
-    Given the round has been started and finished
+    Given the deck is "A♥ 2♦ J♥ 3♦"
+    And the round has been started and finished
+    And the deck is "2♥ 2♦ 3♥ 3♦"
     When I start a new round
+    Then I should see "Enter action:"
+
+  Scenario: start a new round with the remainder of the deck from the previous round
+    Given the deck is "A♥ 2♦ J♠ 3♦ K♥ 4♦ T♠ 5♦"
+    And the round has been started and finished
+    When I start a new round without a deck
     Then I should see "Enter action:"

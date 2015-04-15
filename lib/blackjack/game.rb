@@ -23,7 +23,7 @@ module Blackjack
       prompt_for_bet
     end
 
-    def start_round(bet, deck)
+    def start_round(bet, deck = nil)
       return send_round_already_started if @round_started
       @round_started = true
       bet(bet)
@@ -77,7 +77,7 @@ module Blackjack
     end
 
     def initial_deal(deck)
-      @deck = Deck.create_from_string(deck)
+      @deck = deck ? Deck.create_from_string(deck) : @deck
       @player_hand = Hand.new
       @dealer_hand = DealerHand.new
       hands = [@player_hand, @dealer_hand]

@@ -44,7 +44,7 @@ end
 
 Given(/^the round has been started and finished$/) do
   @game = Blackjack::Game.new(printer)
-  @game.start_round(1, "A♥ 2♦ J♥ 3♦")
+  @game.start_round(1, @deck)
 end
 
 When(/^I start a new round$/) do
@@ -52,6 +52,10 @@ When(/^I start a new round$/) do
   @deck ||= "2♥ 2♦ 3♥ 3♦"
   @game ||= Blackjack::Game.new(printer)
   @game.start_round(@bet, @deck)
+end
+
+When(/^I start a new round without a deck$/) do
+  @game.start_round(1)
 end
 
 When(/^I hit$/) do
