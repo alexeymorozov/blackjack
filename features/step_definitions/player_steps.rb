@@ -33,6 +33,10 @@ Given(/^the game is started$/) do
   @game.start_from_saving(@deck, @player_hand, @dealer_hand, @bet, @player_money)
 end
 
+Given(/^the round hasn't been started$/) do
+  @game = Blackjack::Game.new(printer)
+end
+
 Given(/^the round has already been started$/) do
   @game = Blackjack::Game.new(printer)
   @game.start_round(1, "2♥ 2♦ 3♥ 3♦")

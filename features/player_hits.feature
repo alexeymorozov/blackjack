@@ -32,3 +32,8 @@ Feature: player hits
       | 8♥       | 6♥ 7♥             | 6♥ 7♥ 8♥          | 21           | T♦ A♦             | T♦ A♦             | 21           | You loose!    |
       | 9♥       | 6♥ 7♥             | 6♥ 7♥ 9♥          | 22           | 2♦ 3♦             | 2♦ ?              | 2            | You loose!    |
       | 8♥ 7♦    | 6♥ 7♥             | 6♥ 7♥ 8♥          | 21           | T♦ 6♦             | T♦ 6♦ 7♦          | 23           | You win!      |
+
+  Scenario: hit before the round has been started
+    Given the round hasn't been started
+    When I hit
+    Then I should see "The round hasn't been started yet."

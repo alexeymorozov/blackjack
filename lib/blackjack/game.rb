@@ -14,6 +14,7 @@ module Blackjack
       @dealer_hand = DealerHand.create_dealer_hand_from_string(dealer_hand)
       @bet = bet
       @player_money = player_money
+      @round_started = true
     end
 
     def start
@@ -31,11 +32,13 @@ module Blackjack
     end
 
     def hit
+      return send_round_not_started_yet unless @round_started
       @player_hand << @deck.pop.face_up
       evaluate_turn
     end
 
     def stand
+      return send_round_not_started_yet unless @round_started
       resolve_dealer_hand
       finish_round
     end
@@ -52,6 +55,10 @@ module Blackjack
 
     def send_round_already_started
       @printer.puts("The round has already been started.")
+    end
+
+    def send_round_not_started_yet
+      @printer.puts("The round hasn't been started yet.")
     end
 
     def bet(bet)

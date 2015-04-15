@@ -127,6 +127,13 @@ module Blackjack
     end
 
     describe "#hit" do
+      context "the round hasn't been started yet" do
+        it "sends an error message" do
+          expect(printer).to receive(:puts).with("The round hasn't been started yet.")
+          game.hit
+        end
+      end
+
       context "the player has less than 21 after hitting" do
         before :example do
           game.start_from_saving('4♥', '2♥ 3♥', '2♦ 3♦')
@@ -199,6 +206,13 @@ module Blackjack
     end
 
     describe "#stand" do
+      context "the round hasn't been started yet" do
+        it "sends an error message" do
+          expect(printer).to receive(:puts).with("The round hasn't been started yet.")
+          game.stand
+        end
+      end
+
       it "shows result" do
           game.start_from_saving('', 'T♥ J♥', 'T♦ A♦')
           expect(printer).to receive(:puts).with("You loose!")

@@ -39,3 +39,8 @@ Feature: player stands
       | T♥ J♥       | 20           | T♦ A♦       | 21           | 900          |
       | T♥ J♥       | 20           | T♦ J♦       | 20           | 1000         |
       | T♥ J♥       | 20           | T♦ 7♦       | 17           | 1100         |
+
+  Scenario: stand before the round has been started
+    Given the round hasn't been started
+    When I stand
+    Then I should see "The round hasn't been started yet."
