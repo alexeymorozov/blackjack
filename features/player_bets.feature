@@ -1,7 +1,7 @@
-Feature: player starts round
+Feature: player bets
 
-  The player starts the round. The game tells whether the player wins, pushes,
-  or can continue the round.
+  The player bets. The game tells whether the player wins, pushes, or can 
+  continue the round.
 
   If the player gets 21 points, he either win or push. If his score is less
   than 21 points, he can continue to play the round.
@@ -11,11 +11,10 @@ Feature: player starts round
     - face cards (kings, queens, jacks): 10 points
     - all other cards: their numeric value
 
-  Scenario Outline: different bets
-    Given I am not yet playing
-    And the bet is "<bet>"
+  Scenario Outline: bet
+    Given the bet is "<bet>"
     And the deck is "2♥ 2♦ 3♥ 3♦"
-    When I start a new round
+    When I bet
     Then I should see "Your money: <player_money>. Bet: <integer_bet>."
 
     Scenarios: incorrect bets
@@ -23,26 +22,24 @@ Feature: player starts round
       | -1   | 999          | 1           |
       | 0    | 999          | 1           |
       | 0.5  | 999          | 1           |
+      | 1.5  | 999          | 1           |
       | 1500 | 0            | 1000        |
 
     Scenarios: correct bets
       | bet | player_money | integer_bet |
       | 1   | 999          | 1           |
-      | 1.5 | 999          | 1           |
       | 10  | 990          | 10          |
 
-  Scenario: win with a blackjack
-    Given I am not yet playing
-    And the player money is "1000"
+  Scenario: bet and win with a blackjack
+    Given the player money is "1000"
     And the bet is "100"
     And the deck is "A♥ 2♦ J♥ 3♦"
-    When I start a new round
+    When I bet
     Then I should see "Your money: 1150."
 
-  Scenario Outline: start round
-    Given I am not yet playing
-    And the deck is "<deck>"
-    When I start a new round
+  Scenario Outline: bet and see result
+    Given the deck is "<deck>"
+    When I bet
     Then I should see "Dealer's hand: <dealer_hand>. Score: <dealer_score>."
     And I should see "Your hand: <player_hand>. Score: <player_score>."
     And I should see "<result>"
@@ -60,35 +57,30 @@ Feature: player starts round
       | 3♥ Q♦ 2♥ J♦ | 3♥ 2♥       | 5            | Q♦ ?        | 10           | Enter action: |
       | A♥ Q♦ A♠ J♦ | A♥ A♠       | 12           | Q♦ ?        | 10           | Enter action: |
 
-  Scenario: start a new round twice in a row without ending one
-    Given the round has already been started
-    When I start a new round
+  Scenario: bet twice in a row not finishing the round
+    Given bet has been already done
+    When I bet
     Then I should see "The betting has already been done."
 
-  Scenario: start a new round after the previous one is finished
+  Scenario: bet after finishing the previous round
     Given the deck is "A♥ 2♦ J♥ 3♦"
     And the round has been started and finished
     And the deck is "2♥ 2♦ 3♥ 3♦"
-    When I start a new round
+    When I bet
     Then I should see "Enter action:"
 
-  Scenario: start a new round with the remainder of the deck from the previous round
+  Scenario: bet start a new round with the remainder of the deck from the previous round
     Given the deck is "A♥ 2♦ J♠ 3♦ K♥ 4♦ T♠ 5♦"
     And the round has been started and finished
-    When I start a new round without a deck
+    When I bet without a deck
     Then I should see "Enter action:"
 
   Scenario: not enough cards in the deck
     Given the deck is "2♥"
-    When I start a new round
+    When I bet
     Then I should see "No cards left in the deck. Game over!"
 
   Scenario: not enough money to bet
     Given the player money is "0"
-    When I start a new round
-    Then I should see "The game is over."
-
-  Scenario: start after the game is over
-    Given the game is over
-    When I start a new round
+    When I bet
     Then I should see "The game is over."
