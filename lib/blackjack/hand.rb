@@ -18,13 +18,26 @@ module Blackjack
       self.new(cards)
     end
 
-    def initialize(cards = [], bet = 1)
+    def initialize(cards = [], bet = nil)
       @cards = []
       cards.each do |card|
         receive(card)
       end
 
       @bet = bet
+      @finished = false
+    end
+
+    def dealt?
+      @bet && @cards.size > 0
+    end
+
+    def finish
+      @finished = true
+    end
+
+    def finished?
+      @finished || busted? || full?
     end
 
     def receive(card)

@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 module Blackjack
-  describe Game do
+  describe GameCLI do
     let(:printer) { double('printer').as_null_object }
-    let(:game) { Game.new(printer) }
+    let(:game) { GameCLI.new(Game.new(MessageSender.new(printer))) }
 
     describe "#start" do
       it "sends a welcome message" do
@@ -22,60 +22,70 @@ module Blackjack
       end
     end
 
-    describe "#start_round" do
+    describe "#bet" do
       context "no cards left in the deck" do
         it "sends an error message" do
           expect(printer).to receive(:puts).with("No cards left in the deck. Game over!")
-          game.start_round(1, "")
+          game.deck_from_string("2♥")
+          game.bet(1)
         end
       end
 
       context "no money left" do
         it "sends an error message" do
-          expect(printer).to receive(:puts).with("No money left. Game over!")
+          expect(printer).to receive(:puts).with("The game is over.")
           game.player_money = 0
-          game.start_round(1, "2♥ 2♦ 3♥ 3♦")
+          game.deck_from_string("2♥ 2♦ 3♥ 3♦")
+          game.bet(1)
         end
       end
 
       context "game is over" do
         it "sends an error message" do
-          game.start_round(1, "")
+          game.deck_from_string("")
+          game.bet(1)
           expect(printer).to receive(:puts).with("The game is over.")
-          game.start_round(1)
+          game.bet(1)
         end
       end
 
       context "the round has been already started" do
         it "sends an error message" do
-          game.start_round(1, "2♥ 2♦ 3♥ 3♦")
-          expect(printer).to receive(:puts).with("The round has already been started.")
-          game.start_round(1, "2♥ 2♦ 3♥ 3♦")
+          game.deck_from_string("2♥ 2♦ 3♥ 3♦ 2♥ 2♦ 3♥ 3♦")
+          game.bet(1)
+          expect(printer).to receive(:puts).with("The betting has already been done.")
+          game.bet(1)
         end
       end
 
       context "the round has been started, finished, and started again" do
         it "prompts the player for the next action" do
-          game.start_round(1, "A♥ 2♦ J♥ 3♦")
+          game.deck_from_string("A♥ 2♦ J♥ 3♦")
+          game.bet(1)
           expect(printer).to receive(:puts).with("Enter action:")
-          game.start_round(1, "2♥ 2♦ 3♥ 3♦")
+          game.new_round
+          game.deck_from_string("2♥ 2♦ 3♥ 3♦")
+          game.bet(1)
         end
       end
 
       context "called without a deck" do
         it "uses a deck from the previous round" do
-          game.start_round(1, "A♥ 2♦ J♠ 3♦ K♥ 4♦ T♠ 5♦")
+          game.deck_from_string("A♥ 2♦ J♠ 3♦ K♥ 4♦ T♠ 5♦")
+          game.bet(1)
           expect(printer).to receive(:puts).with("Enter action:")
-          game.start_round(1)
+          game.new_round
+          game.bet(1)
         end
       end
 
       context "the bet is lower than the minimum bet" do
         it "chooses the minimum bet" do
           [-1, 0, 0.5].each do |bet|
-            game = Game.new(printer)
+            game = GameCLI.new(Game.new(MessageSender.new(printer)))
             expect(printer).to receive(:puts).with("Your money: 999. Bet: 1.")
-            game.start_round(bet, "2♥ 2♦ 3♥ 3♦")
+            game.deck_from_string("2♥ 2♦ 3♥ 3♦")
+            game.bet(bet)
           end
         end
       end
@@ -83,56 +93,65 @@ module Blackjack
       context "the bet is higher than the player's money" do
         it "chooses all the player's money as a bet" do
           expect(printer).to receive(:puts).with("Your money: 0. Bet: 1000.")
-          game.start_round(1500, "2♥ 2♦ 3♥ 3♦")
+          game.deck_from_string("2♥ 2♦ 3♥ 3♦")
+          game.bet(1500)
         end
       end
 
       context "the bet is not integer" do
         it "coerces the value to an integer" do
           expect(printer).to receive(:puts).with("Your money: 998. Bet: 2.")
-          game.start_round(2.5, "2♥ 2♦ 3♥ 3♦")
+          game.deck_from_string("2♥ 2♦ 3♥ 3♦")
+          game.bet(2.5)
         end
       end
 
       context "correct bet" do
         it "sends the player's money and bet" do
           expect(printer).to receive(:puts).with("Your money: 900. Bet: 100.")
-          game.start_round(100, "2♥ 2♦ 3♥ 3♦")
+          game.deck_from_string("2♥ 2♦ 3♥ 3♦")
+          game.bet(100)
         end
       end
 
       it "sends the player's hand and score" do
         expect(printer).to receive(:puts).with("Your hand: A♥ J♥. Score: 21.")
-        game.start_round(1, "A♥ Q♦ J♥ J♦")
+        game.deck_from_string("A♥ Q♦ J♥ J♦")
+        game.bet(1)
       end
 
       context "blackjacks" do
         it "sends the dealer's hand face up and score" do
             expect(printer).to receive(:puts).with("Dealer's hand: Q♦ J♦. Score: 20.")
-            game.start_round(1, "A♥ Q♦ J♥ J♦")
+            game.deck_from_string("A♥ Q♦ J♥ J♦")
+            game.bet(1)
         end
 
         context "only the player has a blackjack" do
           it "sends that the player wins" do
             expect(printer).to receive(:puts).with("You win!")
-            game.start_round(1, "A♥ Q♦ J♥ J♦")
+            game.deck_from_string("A♥ Q♦ J♥ J♦")
+            game.bet(1)
           end
 
           it "returns the bet and pays at 3:2" do
           expect(printer).to receive(:puts).with("Your money: 1150.")
-            game.start_round(100, "A♥ 2♦ J♥ 3♦")
+            game.deck_from_string("A♥ 2♦ J♥ 3♦")
+            game.bet(100)
           end
 
           it "gives the dealer no more cards" do
             expect(printer).to receive(:puts).with("Dealer's hand: T♦ 6♦. Score: 16.")
-            game.start_round(1, "A♥ T♦ J♥ 6♦")
+            game.deck_from_string("A♥ T♦ J♥ 6♦")
+            game.bet(1)
           end
         end
 
         context "the player and dealer both have blackjacks" do
           it "sends that the player pushes" do
             expect(printer).to receive(:puts).with("You push!")
-            game.start_round(1, "A♥ A♦ J♥ J♦")
+            game.deck_from_string("A♥ A♦ J♥ J♦")
+            game.bet(1)
           end
         end
       end
@@ -140,19 +159,22 @@ module Blackjack
       context "the player has less than 21 points" do
         it "sends the dealer's hand with the second card face down" do
           expect(printer).to receive(:puts).with("Dealer's hand: A♦ ?. Score: 11.")
-          game.start_round(1, "Q♥ A♦ J♥ J♦")
+          game.deck_from_string("Q♥ A♦ J♥ J♦")
+          game.bet(1)
         end
 
         it "prompts the player for the next action" do
           expect(printer).to receive(:puts).with("Enter action:")
-          game.start_round(1, "Q♥ A♦ J♥ J♦")
+          game.deck_from_string("Q♥ A♦ J♥ J♦")
+          game.bet(1)
         end
       end
 
       context "the player score equals the value of the dealer's first card" do
         it "doesn't flip the dealer's second card face up" do
           expect(printer).to receive(:puts).with("Dealer's hand: 5♦ ?. Score: 5.")
-          game.start_round(1, "2♥ 5♦ 3♥ J♦")
+          game.deck_from_string("2♥ 5♦ 3♥ J♦")
+          game.bet(1)
         end
       end
     end
@@ -160,15 +182,16 @@ module Blackjack
     describe "#hit" do
       context "game is over" do
         it "sends an error message" do
-          game.start_round(1, "")
-          expect(printer).to receive(:puts).with("The game is over.")
+          game.deck_from_string("2♥")
+          game.bet(1)
+          expect(printer).to receive(:puts).with("No cards left in the deck. Game over!")
           game.hit
         end
       end
 
-      context "the round hasn't been started yet" do
+      context "the betting hasn't been completed yet" do
         it "sends an error message" do
-          expect(printer).to receive(:puts).with("The round hasn't been started yet.")
+          expect(printer).to receive(:puts).with("The betting hasn't been completed yet.")
           game.hit
         end
       end
@@ -247,15 +270,16 @@ module Blackjack
     describe "#stand" do
       context "game is over" do
         it "sends an error message" do
-          game.start_round(1, "")
-          expect(printer).to receive(:puts).with("The game is over.")
+          game.deck_from_string("2♥")
+          expect(printer).to receive(:puts).with("No cards left in the deck. Game over!")
+          game.bet(1)
           game.stand
         end
       end
 
-      context "the round hasn't been started yet" do
+      context "the betting hasn't been completed yet" do
         it "sends an error message" do
-          expect(printer).to receive(:puts).with("The round hasn't been started yet.")
+          expect(printer).to receive(:puts).with("The betting hasn't been completed yet.")
           game.stand
         end
       end

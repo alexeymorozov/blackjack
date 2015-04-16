@@ -63,7 +63,7 @@ Feature: player starts round
   Scenario: start a new round twice in a row without ending one
     Given the round has already been started
     When I start a new round
-    Then I should see "The round has already been started."
+    Then I should see "The betting has already been done."
 
   Scenario: start a new round after the previous one is finished
     Given the deck is "A♥ 2♦ J♥ 3♦"
@@ -79,14 +79,14 @@ Feature: player starts round
     Then I should see "Enter action:"
 
   Scenario: not enough cards in the deck
-    Given the deck is ""
+    Given the deck is "2♥"
     When I start a new round
     Then I should see "No cards left in the deck. Game over!"
 
   Scenario: not enough money to bet
     Given the player money is "0"
     When I start a new round
-    Then I should see "No money left. Game over!"
+    Then I should see "The game is over."
 
   Scenario: start after the game is over
     Given the game is over

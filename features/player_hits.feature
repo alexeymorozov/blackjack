@@ -33,10 +33,10 @@ Feature: player hits
       | 9♥       | 6♥ 7♥             | 6♥ 7♥ 9♥          | 22           | 2♦ 3♦             | 2♦ ?              | 2            | You loose!    |
       | 8♥ 7♦    | 6♥ 7♥             | 6♥ 7♥ 8♥          | 21           | T♦ 6♦             | T♦ 6♦ 7♦          | 23           | You win!      |
 
-  Scenario: hit before the round has been started
+  Scenario: hit before the betting
     Given the round hasn't been started
     When I hit
-    Then I should see "The round hasn't been started yet."
+    Then I should see "The betting hasn't been completed yet."
 
   Scenario: hit after the game is over
     Given the game is over

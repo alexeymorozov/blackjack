@@ -40,10 +40,10 @@ Feature: player stands
       | T♥ J♥       | 20           | T♦ J♦       | 20           | 1000         |
       | T♥ J♥       | 20           | T♦ 7♦       | 17           | 1100         |
 
-  Scenario: stand before the round has been started
+  Scenario: stand before the betting
     Given the round hasn't been started
     When I stand
-    Then I should see "The round hasn't been started yet."
+    Then I should see "The betting hasn't been completed yet."
 
   Scenario: stand after the game is over
     Given the game is over

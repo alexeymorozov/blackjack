@@ -16,10 +16,18 @@ module Blackjack
       @cards = cards
     end
 
+    def shuffle!
+      @cards.shuffle!
+    end
+
     def pop
       card = @cards.pop
       raise EmptyDeck.new if card.nil?
       card
+    end
+
+    def empty?
+      @cards.empty?
     end
   end
 end

@@ -4,198 +4,123 @@ module Blackjack
     MINIMUM_BET = 1
 
     attr_writer :player_money
+    attr_reader :message_sender
 
-    def initialize(printer)
-      @printer = printer
+    def initialize(message_sender)
+      @message_sender = message_sender
       @player_money = INITIAL_PLAYER_MONEY
+      @deck = Deck.create_standard_deck.shuffle!
+
+      @commands = [
+        Command::DealCommand.new,
+        Command::ResolveCommand.new(message_sender),
+        Command::TurnCommand.new
+      ]
+
+      new_round
     end
 
-    def start_from_saving(deck, player_hand, dealer_hand, bet = MINIMUM_BET, player_money = INITIAL_PLAYER_MONEY - MINIMUM_BET)
-      @deck = Deck.create_from_string(deck)
-      @player_hand = Hand.create_player_hand_from_string(player_hand)
-      @player_hand.bet = bet
-      @dealer_hand = DealerHand.create_dealer_hand_from_string(dealer_hand)
-      @player_money = player_money
-      @round_started = true
+    def new_round
+      initialize_hands
+      start
+    end
+
+    def initialize_hands
+      @player_hands = [Hand.new]
+      @current_hand = @player_hands.first
+      @dealer_hand = DealerHand.new
     end
 
     def start
-      welcome
-      show_money
-      prompt_for_bet
+      @message_sender.welcome
+      wait_for_bet
     end
 
-    def start_round(bet, deck = nil)
-      return send_game_over if @game_over
+    def start_from_saving(deck, player_hand, dealer_hand, bet = MINIMUM_BET, player_money = INITIAL_PLAYER_MONEY - MINIMUM_BET)
+      @player_money = player_money
+      @deck = Deck.create_from_string(deck)
 
-      return send_round_already_started if @round_started
-      @round_started = true
+      hand = Hand.create_player_hand_from_string(player_hand)
+      hand.bet = bet
+      @player_hands = [hand]
+      @current_hand = @player_hands.first
 
-      begin
-        initial_deal(deck, bet)
-      rescue NoMoneyLeft
-        return send_no_money_left
-      rescue EmptyDeck
-        return send_no_cards_left
-      end
-
-      evaluate_turn
+      @dealer_hand = DealerHand.create_dealer_hand_from_string(dealer_hand)
     end
 
-    def hit
-      return send_game_over if @game_over
-      return send_round_not_started_yet unless @round_started
-      @player_hand << @deck.pop.face_up
-      evaluate_turn
+    def deck_from_string(deck)
+      @deck = deck ? Deck.create_from_string(deck) : @deck
+    end
+
+    def bet(amount)
+      raise GameOver if game_over?
+      raise BettingAlreadyDone if @current_hand.bet
+      do_bet(amount)
+      rest
     end
 
     def stand
-      return send_game_over if @game_over
+      raise BettingNotCompleted unless all_hands_have_bets
+      @current_hand.finish
+      rest
+    end
 
-      return send_round_not_started_yet unless @round_started
-      resolve_dealer_hand
-      finish_round
+    def hit
+      raise BettingNotCompleted unless all_hands_have_bets
+      @current_hand << @deck.pop.face_up
+      @message_sender.send_loss if @current_hand.busted?
+      @message_sender.show_hands(@dealer_hand, @current_hand)
+      rest
     end
 
     private
 
-    def welcome
-      @printer.puts('Welcome to Blackjack!')
-    end
-
-    def prompt_for_bet
-      @printer.puts('Enter bet:')
-    end
-
-    def send_round_already_started
-      @printer.puts("The round has already been started.")
-    end
-
-    def send_round_not_started_yet
-      @printer.puts("The round hasn't been started yet.")
-    end
-
-    def send_game_over
-      @printer.puts("The game is over.")
-    end
-
-    def send_no_cards_left
-      @game_over = true
-      @printer.puts("No cards left in the deck. Game over!")
-    end
-
-    def send_no_money_left
-      @game_over = true
-      @printer.puts("No money left. Game over!")
-    end
-
-    def do_bet(bet_candidate)
-      raise NoMoneyLeft if @player_money < MINIMUM_BET
-      integer_bet = bet_candidate.to_i
-      if integer_bet < MINIMUM_BET
-        bet = MINIMUM_BET
-      elsif integer_bet > @player_money
-        bet = @player_money
-      else
-        bet = integer_bet
-      end
-
-      @player_money -= bet
-
-      bet
-    end
-
-    def initial_deal(deck, bet)
-      @deck = deck ? Deck.create_from_string(deck) : @deck
-      @player_hand = Hand.new([], do_bet(bet))
-      @dealer_hand = DealerHand.new
-      hands = [@player_hand, @dealer_hand]
-
-      show_bet
-
-      2.times do |i|
-        hands.each do |hand|
-          card = @deck.pop
-          card.face_up if hand.equal?(@player_hand) || i == 0
-          hand << card
+    def rest
+      @commands.each do |command|
+        if command.can_be_run?(@player_hands)
+          @current_hand, @player_money = command.run(@player_money, @deck, @player_hands, @dealer_hand, @current_hand)
         end
       end
+
+      if @current_hand
+        wait_for_action
+      end
     end
 
-    def evaluate_turn
-      if @player_hand.busted?
-        finish_round
-      elsif @player_hand.full?
-        stand
+    def game_over?
+      @player_money < MINIMUM_BET || @deck.empty?
+    end
+
+    def do_bet(amount)
+      bet = prepare_bet(amount)
+      @player_money -= bet
+      @current_hand.bet = bet
+      @message_sender.show_bet(@player_money, @current_hand)
+    end
+
+    def prepare_bet(bet_candidate)
+      integer_bet = bet_candidate.to_i
+      if integer_bet < MINIMUM_BET
+        MINIMUM_BET
+      elsif integer_bet > @player_money
+        @player_money
       else
-        continue_round
+        integer_bet
       end
     end
 
-    def resolve_dealer_hand
-      @dealer_hand.face_up
-      while !@dealer_hand.full? && !@player_hand.has_blackjack?
-        @dealer_hand << @deck.pop.face_up
-      end
+    def all_hands_have_bets
+      @player_hands.all? { |hand| hand.bet }
     end
 
-    def finish_round
-      show_hands
-      show_result
-      @round_started = false
+    def wait_for_bet
+      @message_sender.show_money(@player_money)
+      @message_sender.prompt_for_bet
     end
 
-    def continue_round
-      show_hands
-      prompt_for_action
-    end
-
-    def show_result
-      if @player_hand.busted?
-        send_loss
-      elsif @dealer_hand.busted?
-        send_win
-      elsif @player_hand > @dealer_hand
-        send_win
-      elsif @player_hand < @dealer_hand
-        send_loss
-      else
-        send_push
-      end
-    end
-
-    def show_bet
-      @printer.puts("Your money: #{@player_money}. Bet: #{@player_hand.bet}.")
-    end
-
-    def show_hands
-      @printer.puts("Dealer's hand: #{@dealer_hand}. Score: #{@dealer_hand.score}.")
-      @printer.puts("Your hand: #{@player_hand}. Score: #{@player_hand.score}.")
-    end
-
-    def show_money
-      @printer.puts("Your money: #{@player_money}.")
-    end
-
-    def send_win
-      @printer.puts("You win!")
-      @player_money += (@player_hand.bet * (@player_hand.has_blackjack? ? 2.5 : 2)).to_i
-      show_money
-    end
-
-    def send_loss
-      @printer.puts("You loose!")
-      show_money
-    end
-
-    def send_push
-      @printer.puts("You push!")
-      @player_money += @player_hand.bet
-      show_money
-    end
-
-    def prompt_for_action
-      @printer.puts("Enter action:")
+    def wait_for_action
+      @message_sender.show_hands(@dealer_hand, @current_hand)
+      @message_sender.prompt_for_action
     end
   end
 end
