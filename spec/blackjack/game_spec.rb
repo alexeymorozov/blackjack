@@ -1,9 +1,15 @@
 require 'spec_helper'
 
 module Blackjack
-  describe GameCLI do
+  describe Game do
     let(:printer) { double('printer').as_null_object }
     let(:game) { GameCLI.new(Game.new(MessageSender.new(printer))) }
+    let(:pure_game) { Game.new(MessageSender.new(printer)) }
+
+    before :example do
+      game.start_round
+      pure_game.start_round
+    end
 
     describe "#start" do
       it "sends a welcome message" do
@@ -63,7 +69,7 @@ module Blackjack
           game.deck_from_string("A♥ 2♦ J♥ 3♦")
           game.bet(1)
           expect(printer).to receive(:puts).with("Enter action:")
-          game.new_round
+          game.start_round
           game.deck_from_string("2♥ 2♦ 3♥ 3♦")
           game.bet(1)
         end
@@ -74,19 +80,16 @@ module Blackjack
           game.deck_from_string("A♥ 2♦ J♠ 3♦ K♥ 4♦ T♠ 5♦")
           game.bet(1)
           expect(printer).to receive(:puts).with("Enter action:")
-          game.new_round
+          game.start_round
           game.bet(1)
         end
       end
 
       context "the bet is lower than the minimum bet" do
         it "chooses the minimum bet" do
-          [-1, 0, 0.5].each do |bet|
-            game = GameCLI.new(Game.new(MessageSender.new(printer)))
-            expect(printer).to receive(:puts).with("Your money: 999. Bet: 1.")
-            game.deck_from_string("2♥ 2♦ 3♥ 3♦")
-            game.bet(bet)
-          end
+          expect(printer).to receive(:puts).with("Your money: 999. Bet: 1.")
+          game.deck_from_string("2♥ 2♦ 3♥ 3♦")
+          game.bet(-1)
         end
       end
 

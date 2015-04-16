@@ -17,10 +17,10 @@ module Blackjack
         Command::TurnCommand.new
       ]
 
-      new_round
+      start_round
     end
 
-    def new_round
+    def start_round
       initialize_hands
       start
     end

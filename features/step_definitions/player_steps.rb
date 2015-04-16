@@ -46,7 +46,7 @@ Given(/^the round has been started and finished$/) do
   @game = game
   @game.deck_from_string(@deck)
   @game.bet(1)
-  @game.new_round
+  @game.start_round
 end
 
 Given(/^the game is over$/) do
