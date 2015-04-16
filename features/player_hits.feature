@@ -12,16 +12,14 @@ Feature: player hits
   a value of 17 or higher.
 
   Scenario Outline: hit
-    Given the player hand is "<given_player_hand>"
-    And the dealer hand is "<given_dealer_hand>"
-    And the deck is "<deck>"
-    And the game is started
+    Given the game is dealt with the player hand "<given_player_hand>", the dealer hand "<given_dealer_hand>", and the deck "<deck>"
+    And the bet "1" has been already done
     When I hit
     Then I should see "Dealer's hand: <final_dealer_hand>. Score: <dealer_score>."
     And I should see "Your hand: <final_player_hand>. Score: <player_score>."
     And I should see "<result>"
 
-    Scenarios: hit
+    Examples:
       | deck     | given_player_hand | final_player_hand | player_score | given_dealer_hand | final_dealer_hand | dealer_score | result        |
       | 4♥       | 2♥ 3♥             | 2♥ 3♥ 4♥          | 9            | 2♦ 3♦             | 2♦ ?              | 2            | Enter action: |
       | 8♥       | 6♥ 7♥             | 6♥ 7♥ 8♥          | 21           | T♦ 7♦             | T♦ 7♦             | 17           | You win!      |
@@ -33,12 +31,8 @@ Feature: player hits
       | 9♥       | 6♥ 7♥             | 6♥ 7♥ 9♥          | 22           | 2♦ 3♦             | 2♦ ?              | 2            | You loose!    |
       | 8♥ 7♦    | 6♥ 7♥             | 6♥ 7♥ 8♥          | 21           | T♦ 6♦             | T♦ 6♦ 7♦          | 23           | You win!      |
 
-  Scenario: hit before the betting
-    Given the round hasn't been started
-    When I hit
+  Scenario: stand before the betting
+    Given the round is started
+    And the bet hasn't been done yet
+    When I stand
     Then I should see "The betting hasn't been completed yet."
-
-  Scenario: hit after the game is over
-    Given the game is over
-    When I hit
-    Then I should see "The game is over."

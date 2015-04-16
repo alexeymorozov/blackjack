@@ -6,18 +6,16 @@ module Blackjack
     attr_writer :player_money
     attr_reader :message_sender
 
-    def initialize(message_sender)
+    def initialize(message_sender, deck = nil, player_money = nil)
       @message_sender = message_sender
-      @player_money = INITIAL_PLAYER_MONEY
-      @deck = Deck.create_standard_deck.shuffle!
+      @deck = deck || Deck.create_standard_deck.shuffle!
+      @player_money = player_money || INITIAL_PLAYER_MONEY
 
       @commands = [
         Command::DealCommand.new,
         Command::ResolveCommand.new(message_sender),
         Command::TurnCommand.new
       ]
-
-      start_round
     end
 
     def start_round
