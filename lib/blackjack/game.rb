@@ -32,7 +32,7 @@ module Blackjack
 
     def stand
       raise BettingNotCompleted unless all_hands_have_bets
-      @current_hand.finish
+      @current_hand.finish!
       evaluate_turn
     end
 
