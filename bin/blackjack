@@ -4,6 +4,7 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'blackjack'
 
 game = Blackjack::GameCLI.new(Blackjack::Game.new, Blackjack::MessageSender.new(STDOUT))
+game.start_round
 while action = gets.chomp
   args = action.split
   game.send(*args)
