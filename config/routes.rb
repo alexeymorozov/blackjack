@@ -1,6 +1,13 @@
 Rails.application.routes.draw do
   root 'games#new'
-  resource :game
+  resource :game, only: [:new, :create, :show] do
+    member do
+      post 'bet'
+      post 'stand'
+      post 'hit'
+      post 'start_round'
+    end
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

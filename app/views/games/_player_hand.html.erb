@@ -1,0 +1,12 @@
+<li>
+  Cards: <%= player_hand %>.
+  Score: <%= player_hand.score %>.
+  Bet: <%= player_hand.bet %>.
+  <% if player_hand.win? %>
+    Win!
+  <% elsif player_hand.push? %>
+    Push!
+  <% elsif player_hand.loss? %>
+    Loss!
+  <% end %>
+</li>

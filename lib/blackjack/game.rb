@@ -9,11 +9,12 @@ module Blackjack
 
     def self.create
       game = Game.new
+      game.start_round
       @@storage[game.object_id] = game
     end
 
     def self.find(object_id)
-      @@storage[object_id]
+      @@storage[object_id] or raise GameNotFound
     end
 
     def initialize(deck = nil, player_money = nil)
@@ -42,15 +43,43 @@ module Blackjack
     end
 
     def stand
-      raise BettingNotCompleted unless all_hands_have_bets
+      raise BettingNotCompleted unless all_hands_have_bets?
       @current_hand.finish!
       evaluate_turn
     end
 
     def hit
-      raise BettingNotCompleted unless all_hands_have_bets
+      raise BettingNotCompleted unless all_hands_have_bets?
       @current_hand << @deck.pop.face_up
       evaluate_turn
+    end
+
+    def can_bet?
+      round_started? && @current_hand.bet.nil?
+    end
+
+    def can_stand?
+      round_started? && dealt?
+    end
+
+    def can_hit?
+      round_started? && dealt?
+    end
+
+    def can_start_round?
+      round_over? && !game_over?
+    end
+
+    def dealt?
+      @player_hands.any? { |hand| hand.dealt? }
+    end
+
+    def round_started?
+      !round_over? && !game_over?
+    end
+
+    def round_over?
+      @current_hand.nil?
     end
 
     def game_over?
@@ -78,7 +107,7 @@ module Blackjack
       end
     end
 
-    def all_hands_have_bets
+    def all_hands_have_bets?
       @player_hands.all? { |hand| hand.bet }
     end
   end

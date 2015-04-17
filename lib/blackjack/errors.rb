@@ -2,10 +2,13 @@ module Blackjack
   class BlackjackError < StandardError
   end
 
-  class BettingAlreadyDone < BlackjackError
+  class InvalidAction < BlackjackError
   end
 
-  class BettingNotCompleted < BlackjackError
+  class BettingAlreadyDone < InvalidAction
+  end
+
+  class BettingNotCompleted < InvalidAction
   end
 
   class EmptyDeck < BlackjackError
@@ -15,5 +18,8 @@ module Blackjack
   end
 
   class GameOver < BlackjackError
+  end
+
+  class GameNotFound < BlackjackError
   end
 end
