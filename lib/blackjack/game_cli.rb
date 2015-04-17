@@ -21,8 +21,6 @@ module Blackjack
         @message_sender.send_no_cards_left
       rescue BettingAlreadyDone
         @message_sender.send_betting_already_done
-      rescue RoundAlreadyStarted
-        @message_sender.send_round_already_started
       rescue GameOver
         @message_sender.send_game_over
       end

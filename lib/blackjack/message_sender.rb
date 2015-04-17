@@ -60,13 +60,5 @@ module Blackjack
     def send_betting_not_completed
       @printer.puts("The betting hasn't been completed yet.")
     end
-
-    def send_round_already_started
-      @printer.puts("The round has already been started.")
-    end
-
-    def send_round_not_started_yet
-      @printer.puts("The round hasn't been started yet.")
-    end
   end
 end

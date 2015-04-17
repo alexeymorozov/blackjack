@@ -16,7 +16,4 @@ module Blackjack
 
   class GameOver < BlackjackError
   end
-
-  class RoundAlreadyStarted < BlackjackError
-  end
 end
