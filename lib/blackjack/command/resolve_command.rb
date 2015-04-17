@@ -1,10 +1,6 @@
 module Blackjack
   module Command
     class ResolveCommand
-      def initialize(message_sender)
-        @message_sender = message_sender
-      end
-
       def can_be_run?(player_hands)
         all_hands_are_finished?(player_hands) && !all_hands_are_busted?(player_hands)
       end
@@ -39,7 +35,6 @@ module Blackjack
       def handle_result_for_each_hands
         @player_hands.each do |hand|
           @current_hand = hand
-          @message_sender.show_hands(@dealer_hand, @current_hand)
           handle_result
         end
       end
@@ -59,20 +54,17 @@ module Blackjack
       end
 
       def handle_win
-        @message_sender.send_win
+        @current_hand.win!
         @player_money += (@current_hand.bet * (@current_hand.has_blackjack? ? 2.5 : 2)).to_i
-        @message_sender.show_money(@player_money)
       end
 
       def handle_loss
-        @message_sender.send_loss
-        @message_sender.show_money(@player_money)
+        @current_hand.loss!
       end
 
       def handle_push
-        @message_sender.send_push
+        @current_hand.push!
         @player_money += @current_hand.bet
-        @message_sender.show_money(@player_money)
       end
     end
   end

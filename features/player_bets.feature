@@ -12,7 +12,7 @@ Feature: player bets
     - all other cards: their numeric value
 
   Scenario Outline: bet
-    Given the round is started
+    Given the round is started with the deck "2♥ 2♦ 3♥ 3♦"
     When I bet "<amount>"
     Then I should see "Your money: <player_money>. Bet: <integer_bet>."
 

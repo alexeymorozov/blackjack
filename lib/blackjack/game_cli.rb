@@ -1,8 +1,15 @@
 module Blackjack
   class GameCLI
-    def initialize(game = Game.new)
+    def initialize(game, message_sender)
       @game = game
-      @message_sender = game.message_sender
+      @message_sender = message_sender
+    end
+
+    def start_round
+      @game.start_round
+      @message_sender.welcome
+      @message_sender.show_money(@game.player_money)
+      @message_sender.prompt_for_bet
     end
 
     def bet(*args)
@@ -19,6 +26,9 @@ module Blackjack
       rescue GameOver
         @message_sender.send_game_over
       end
+
+      @message_sender.show_bet(@game.player_money, @game.player_hands.first)
+      show_hands
     end
 
     def stand(*args)
@@ -29,6 +39,8 @@ module Blackjack
       rescue BettingNotCompleted
         @message_sender.send_betting_not_completed
       end
+
+      show_hands
     end
 
     def hit(*args)
@@ -38,6 +50,26 @@ module Blackjack
         @message_sender.send_no_cards_left
       rescue BettingNotCompleted
         @message_sender.send_betting_not_completed
+      end
+
+      show_hands
+    end
+
+    def show_hands
+      @message_sender.show_hands(@game.dealer_hand, @game.player_hands.first)
+
+      if @game.current_hand.nil?
+        @message_sender.show_money(@game.player_money)
+        hand = @game.player_hands.first
+        if hand.win?
+          @message_sender.send_win
+        elsif hand.push?
+          @message_sender.send_push
+        elsif hand.loss?
+          @message_sender.send_loss
+        end
+      else
+        @message_sender.prompt_for_action
       end
     end
 

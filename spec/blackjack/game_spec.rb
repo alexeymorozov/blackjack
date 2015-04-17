@@ -3,317 +3,249 @@ require 'spec_helper'
 module Blackjack
   describe Game do
     let(:printer) { double('printer').as_null_object }
-    let(:game) { GameCLI.new(Game.new(MessageSender.new(printer))) }
-    let(:pure_game) { Game.new(MessageSender.new(printer)) }
 
-    before :example do
+    def start_game(card_string = nil, player_money = nil)
+      deck = card_string ? Deck.create_from_string(card_string) : nil
+      game = Game.new(deck, player_money)
       game.start_round
-      pure_game.start_round
-    end
-
-    describe "#start" do
-      it "sends a welcome message" do
-        expect(printer).to receive(:puts).with('Welcome to Blackjack!')
-        game.start
-      end
-
-      it "sends the player's money" do
-        expect(printer).to receive(:puts).with("Your money: 1000.")
-        game.start
-      end
-
-      it "prompts for the first bet" do
-        expect(printer).to receive(:puts).with('Enter bet:')
-        game.start
-      end
+      game
     end
 
     describe "#bet" do
       context "no cards left in the deck" do
         it "sends an error message" do
-          expect(printer).to receive(:puts).with("No cards left in the deck. Game over!")
-          game.deck_from_string("2♥")
-          game.bet(1)
+          game = start_game("2♥")
+          expect { game.bet(1) }.to raise_error(EmptyDeck)
         end
       end
 
       context "no money left" do
         it "sends an error message" do
-          expect(printer).to receive(:puts).with("The game is over.")
-          game.player_money = 0
-          game.deck_from_string("2♥ 2♦ 3♥ 3♦")
-          game.bet(1)
-        end
-      end
-
-      context "game is over" do
-        it "sends an error message" do
-          game.deck_from_string("")
-          game.bet(1)
-          expect(printer).to receive(:puts).with("The game is over.")
-          game.bet(1)
+          game = start_game(nil, 0)
+          expect { game.bet(1) }.to raise_error(GameOver)
         end
       end
 
       context "the round has been already started" do
         it "sends an error message" do
-          game.deck_from_string("2♥ 2♦ 3♥ 3♦ 2♥ 2♦ 3♥ 3♦")
+          game = start_game("2♥ 2♦ 3♥ 3♦ 4♥ 4♦ 5♥ 5♦")
           game.bet(1)
-          expect(printer).to receive(:puts).with("The betting has already been done.")
-          game.bet(1)
+          expect { game.bet(1) }.to raise_error(BettingAlreadyDone)
         end
       end
 
       context "the round has been started, finished, and started again" do
         it "prompts the player for the next action" do
-          game.deck_from_string("A♥ 2♦ J♥ 3♦")
+          game = start_game("A♥ 2♦ J♥ 3♦ 4♥ 4♦ 5♥ 5♦")
           game.bet(1)
-          expect(printer).to receive(:puts).with("Enter action:")
-          game.start_round
-          game.deck_from_string("2♥ 2♦ 3♥ 3♦")
-          game.bet(1)
-        end
-      end
-
-      context "called without a deck" do
-        it "uses a deck from the previous round" do
-          game.deck_from_string("A♥ 2♦ J♠ 3♦ K♥ 4♦ T♠ 5♦")
-          game.bet(1)
-          expect(printer).to receive(:puts).with("Enter action:")
           game.start_round
           game.bet(1)
+          expect(game.current_hand).not_to be_nil
         end
       end
 
       context "the bet is lower than the minimum bet" do
         it "chooses the minimum bet" do
-          expect(printer).to receive(:puts).with("Your money: 999. Bet: 1.")
-          game.deck_from_string("2♥ 2♦ 3♥ 3♦")
+          game = start_game("A♥ Q♦ J♥ J♦")
           game.bet(-1)
+          expect(game.player_hands.first.bet).to eq(1)
         end
       end
 
       context "the bet is higher than the player's money" do
         it "chooses all the player's money as a bet" do
-          expect(printer).to receive(:puts).with("Your money: 0. Bet: 1000.")
-          game.deck_from_string("2♥ 2♦ 3♥ 3♦")
+          game = start_game("A♥ Q♦ J♥ J♦")
           game.bet(1500)
+          expect(game.player_hands.first.bet).to eq(1000)
         end
       end
 
       context "the bet is not integer" do
         it "coerces the value to an integer" do
-          expect(printer).to receive(:puts).with("Your money: 998. Bet: 2.")
-          game.deck_from_string("2♥ 2♦ 3♥ 3♦")
+          game = start_game("A♥ Q♦ J♥ J♦")
           game.bet(2.5)
+          expect(game.player_hands.first.bet).to eq(2)
         end
-      end
-
-      context "correct bet" do
-        it "sends the player's money and bet" do
-          expect(printer).to receive(:puts).with("Your money: 900. Bet: 100.")
-          game.deck_from_string("2♥ 2♦ 3♥ 3♦")
-          game.bet(100)
-        end
-      end
-
-      it "sends the player's hand and score" do
-        expect(printer).to receive(:puts).with("Your hand: A♥ J♥. Score: 21.")
-        game.deck_from_string("A♥ Q♦ J♥ J♦")
-        game.bet(1)
       end
 
       context "blackjacks" do
         it "sends the dealer's hand face up and score" do
-            expect(printer).to receive(:puts).with("Dealer's hand: Q♦ J♦. Score: 20.")
-            game.deck_from_string("A♥ Q♦ J♥ J♦")
-            game.bet(1)
+          game = start_game("A♥ Q♦ J♥ J♦")
+          game.bet(1)
+          cards = game.dealer_hand.cards
+          expect(cards[0].face_up?).to be true
+          expect(cards[1].face_up?).to be true
         end
 
         context "only the player has a blackjack" do
           it "sends that the player wins" do
-            expect(printer).to receive(:puts).with("You win!")
-            game.deck_from_string("A♥ Q♦ J♥ J♦")
+            game = start_game("A♥ Q♦ J♥ J♦")
             game.bet(1)
+            expect(game.player_hands.first.win?).to be true
           end
 
           it "returns the bet and pays at 3:2" do
-          expect(printer).to receive(:puts).with("Your money: 1150.")
-            game.deck_from_string("A♥ 2♦ J♥ 3♦")
+            game = start_game("A♥ 2♦ J♥ 3♦")
             game.bet(100)
+            expect(game.player_money).to eq(1150)
           end
 
           it "gives the dealer no more cards" do
-            expect(printer).to receive(:puts).with("Dealer's hand: T♦ 6♦. Score: 16.")
-            game.deck_from_string("A♥ T♦ J♥ 6♦")
+            game = start_game("A♥ T♦ J♥ 6♦")
             game.bet(1)
+            expect(game.dealer_hand.cards.size).to eq(2)
           end
         end
 
         context "the player and dealer both have blackjacks" do
           it "sends that the player pushes" do
-            expect(printer).to receive(:puts).with("You push!")
-            game.deck_from_string("A♥ A♦ J♥ J♦")
+            game = start_game("A♥ A♦ J♥ J♦")
             game.bet(1)
+            expect(game.player_hands.first.push?).to be true
           end
         end
       end
 
       context "the player has less than 21 points" do
         it "sends the dealer's hand with the second card face down" do
-          expect(printer).to receive(:puts).with("Dealer's hand: A♦ ?. Score: 11.")
-          game.deck_from_string("Q♥ A♦ J♥ J♦")
+          game = start_game("Q♥ A♦ J♥ J♦")
           game.bet(1)
-        end
-
-        it "prompts the player for the next action" do
-          expect(printer).to receive(:puts).with("Enter action:")
-          game.deck_from_string("Q♥ A♦ J♥ J♦")
-          game.bet(1)
+          cards = game.dealer_hand.cards
+          expect(cards[0].face_up?).to be true
+          expect(cards[1].face_up?).to be false
         end
       end
 
       context "the player score equals the value of the dealer's first card" do
         it "doesn't flip the dealer's second card face up" do
-          expect(printer).to receive(:puts).with("Dealer's hand: 5♦ ?. Score: 5.")
-          game.deck_from_string("2♥ 5♦ 3♥ J♦")
+          game = start_game("2♥ 5♦ 3♥ J♦")
           game.bet(1)
+          cards = game.dealer_hand.cards
+          expect(cards[0].face_up?).to be true
+          expect(cards[1].face_up?).to be false
         end
       end
     end
 
     describe "#hit" do
-      context "game is over" do
+      def start_game_and_hit(card_string)
+        game = start_game(card_string)
+        game.bet(1)
+        game.hit
+        game
+      end
+
+      context "no cards left in the deck" do
         it "sends an error message" do
-          game.deck_from_string("2♥")
+          game = start_game("2♥ 2♦ 3♥ 3♦")
           game.bet(1)
-          expect(printer).to receive(:puts).with("No cards left in the deck. Game over!")
-          game.hit
+          expect { game.hit }.to raise_error(EmptyDeck)
         end
       end
 
       context "the betting hasn't been completed yet" do
         it "sends an error message" do
-          expect(printer).to receive(:puts).with("The betting hasn't been completed yet.")
-          game.hit
+          game = start_game("2♥ 2♦ 3♥ 3♦")
+          expect { game.hit }.to raise_error(BettingNotCompleted)
         end
       end
 
       context "the player has less than 21 after hitting" do
-        before :example do
-          game.start_from_saving('4♥', '2♥ 3♥', '2♦ 3♦')
-        end
-
-        after :example do
-          game.hit
-        end
-
         it "sends the player's hand with a new card" do
-          expect(printer).to receive(:puts).with("Your hand: 2♥ 3♥ 4♥. Score: 9.")
+          game = start_game_and_hit("2♥ 2♦ 3♥ 3♦ 4♥")
+          expect(game.player_hands.first.cards.size).to eq(3)
         end
 
         it "sends the dealer's hand untouched" do
-          expect(printer).to receive(:puts).with("Dealer's hand: 2♦ ?. Score: 2.")
-        end
-
-        it "prompts the player for the next action" do
-          expect(printer).to receive(:puts).with("Enter action:")
+          game = start_game_and_hit("2♥ 2♦ 3♥ 3♦ 4♥")
+          expect(game.dealer_hand.cards.size).to eq(2)
         end
       end
 
       context "the player has 21 points after hitting and the dealer has 17 points" do
-        it "sends that the player wins" do
-          game.start_from_saving('8♥', '6♥ 7♥', 'T♦ 7♦')
-          expect(printer).to receive(:puts).with("You win!")
-          game.hit
+        it "gives the dealer no card" do
+          game = start_game_and_hit("6♥ T♦ 7♥ 7♦ 8♥")
+          expect(game.dealer_hand.cards.size).to eq(2)
         end
       end
 
       context "the player has 21 points after hitting and the dealer has 16 points" do
         it "gives the dealer a card" do
-          game.start_from_saving('8♥ 4♦', '6♥ 7♥', 'T♦ 6♦')
-          expect(printer).to receive(:puts).with("Dealer's hand: T♦ 6♦ 4♦. Score: 20.")
-          game.hit
+          game = start_game_and_hit("6♥ T♦ 7♥ 6♦ 8♥ 4♦")
+          expect(game.dealer_hand.cards.size).to eq(3)
         end
       end
 
       context "the player has 21 points after hitting and the dealer has 13 points" do
         it "gives the dealer a card until he has at least 17 points" do
-          game.start_from_saving('8♥ 3♦ 2♦', '6♥ 7♥', '7♦ 6♦')
-          expect(printer).to receive(:puts).with("Dealer's hand: 7♦ 6♦ 3♦ 2♦. Score: 18.")
-          game.hit
+          game = start_game_and_hit("6♥ 7♦ 7♥ 6♦ 8♥ 3♦ 2♦")
+          expect(game.dealer_hand.cards.size).to eq(4)
         end
       end
 
       context "the player has 21 points after hitting and the dealer has blackjack in two cards" do
         it "sends that the player looses" do
-          game.start_from_saving('8♥', '6♥ 7♥', 'T♦ A♦')
-          expect(printer).to receive(:puts).with("You loose!")
-          game.hit
+          game = start_game_and_hit('6♥ T♦ 7♥ A♦ 8♥')
+          expect(game.player_hands.first.loss?).to be true
         end
       end
 
       context "the player has 22 points after hitting" do
         it "sends that the player looses" do
-          game.start_from_saving('9♥', '6♥ 7♥', '2♦ 3♦')
-          expect(printer).to receive(:puts).with("You loose!")
-          game.hit
+          game = start_game_and_hit('6♥ 2♦ 7♥ 3♦ 9♥')
+          expect(game.player_hands.first.loss?).to be true
         end
       end
 
       context "the player gets 21 points and the dealer gets more than 21 points" do
         it "sends that the player wins" do
-          game.start_from_saving('8♥ 7♦', '6♥ 7♥', 'T♦ 6♦')
-          expect(printer).to receive(:puts).with("You win!")
-          game.hit
+          game = start_game_and_hit('6♥ T♦ 7♥ 6♦ 8♥ 7♦')
+          expect(game.player_hands.first.win?).to be true
         end
       end
     end
 
     describe "#stand" do
-      context "game is over" do
+      def start_game_and_stand(card_string)
+        game = start_game(card_string)
+        game.bet(1)
+        game.stand
+        game
+      end
+
+      context "no cards left in the deck" do
         it "sends an error message" do
-          game.deck_from_string("2♥")
-          expect(printer).to receive(:puts).with("No cards left in the deck. Game over!")
+          game = start_game("2♥ 2♦ 3♥ 3♦")
           game.bet(1)
-          game.stand
+          expect { game.stand }.to raise_error(EmptyDeck)
         end
       end
 
       context "the betting hasn't been completed yet" do
         it "sends an error message" do
-          expect(printer).to receive(:puts).with("The betting hasn't been completed yet.")
-          game.stand
+          game = start_game("2♥")
+          expect { game.stand }.to raise_error(BettingNotCompleted)
         end
-      end
-
-      it "shows result" do
-          game.start_from_saving('', 'T♥ J♥', 'T♦ A♦')
-          expect(printer).to receive(:puts).with("You loose!")
-          game.stand
       end
 
       context "the player looses" do
         it "doesn't return the bet" do
-            game.start_from_saving('', 'T♥ J♥', 'T♦ A♦', 100, 900)
-            expect(printer).to receive(:puts).with("Your money: 900.")
-            game.stand
+          game = start_game_and_stand('T♥ A♦ J♥ J♦')
+          expect(game.player_money).to eq(999)
         end
       end
 
       context "the player pushes" do
         it "returns the bet" do
-          game.start_from_saving('', 'T♥ J♥', 'T♦ J♦', 100, 900)
-          expect(printer).to receive(:puts).with("Your money: 1000.")
-          game.stand
+          game = start_game_and_stand('T♥ T♦ J♥ J♦')
+          expect(game.player_money).to eq(1000)
         end
       end
 
       context "the player wins" do
         it "returns the bet and pays at 1:1" do
-          game.start_from_saving('', 'T♥ J♥', 'T♦ 7♦', 100, 900)
-          expect(printer).to receive(:puts).with("Your money: 1100.")
-          game.stand
+          game = start_game_and_stand('T♥ T♦ J♥ 7♦')
+          expect(game.player_money).to eq(1001)
         end
       end
     end

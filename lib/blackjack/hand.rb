@@ -6,6 +6,7 @@ module Blackjack
     COUNT_OF_CARDS_IN_BLACKJACK_HAND = 2
 
     attr_accessor :bet
+    attr_reader :cards
 
     def self.create_player_hand_from_string(card_codes)
       cards = card_codes.split.map { |code| Card.new(code).face_up }
@@ -38,6 +39,30 @@ module Blackjack
 
     def finished?
       @finished || busted? || full?
+    end
+
+    def win!
+      @result = :win
+    end
+
+    def win?
+      @result == :win
+    end
+
+    def push!
+      @result = :push
+    end
+
+    def push?
+      @result == :push
+    end
+
+    def loss!
+      @result = :loss
+    end
+
+    def loss?
+      @result == :loss || busted?
     end
 
     def receive(card)

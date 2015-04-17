@@ -48,7 +48,7 @@ Then(/^I should see "(.*?)"$/) do |message|
 end
 
 def create_game(deck = nil)
-  Blackjack::GameCLI.new(Blackjack::Game.new(Blackjack::MessageSender.new(printer), deck))
+  Blackjack::GameCLI.new(Blackjack::Game.new(deck), Blackjack::MessageSender.new(printer))
 end
 
 def create_deck(card_codes)
