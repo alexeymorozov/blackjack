@@ -6,12 +6,16 @@ module Blackjack
       end
 
       def run(player_money, deck, player_hands, dealer_hand, current_hand)
-        @player_money = player_money
-        @deck = deck
-        @player_hands = player_hands
-        @dealer_hand = dealer_hand
-        deal
-        [nil, @player_money]
+        hands = player_hands + [dealer_hand]
+        2.times do |i|
+          hands.each do |hand|
+            card = deck.pop
+            card.face_up unless hand.equal?(dealer_hand) && i == 1
+            hand << card
+          end
+        end
+
+        [nil, player_money]
       end
 
       private
@@ -22,17 +26,6 @@ module Blackjack
 
       def dealt?(player_hands)
         player_hands.any? { |hand| hand.dealt? }
-      end
-
-      def deal
-        hands = @player_hands + [@dealer_hand]
-        2.times do |i|
-          hands.each do |hand|
-            card = @deck.pop
-            card.face_up unless hand.equal?(@dealer_hand) && i == 1
-            hand << card
-          end
-        end
       end
     end
   end
