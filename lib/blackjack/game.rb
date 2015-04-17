@@ -27,19 +27,19 @@ module Blackjack
       bet = prepare_bet(amount)
       @player_money -= bet
       @current_hand.bet = bet
-      rest
+      evaluate_turn
     end
 
     def stand
       raise BettingNotCompleted unless all_hands_have_bets
       @current_hand.finish
-      rest
+      evaluate_turn
     end
 
     def hit
       raise BettingNotCompleted unless all_hands_have_bets
       @current_hand << @deck.pop.face_up
-      rest
+      evaluate_turn
     end
 
     def game_over?
@@ -59,7 +59,7 @@ module Blackjack
       end
     end
 
-    def rest
+    def evaluate_turn
       @commands.each do |command|
         if command.can_be_run?(@player_hands)
           @current_hand, @player_money = command.run(@player_money, @deck, @player_hands, @dealer_hand, @current_hand)
