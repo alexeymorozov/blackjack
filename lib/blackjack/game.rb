@@ -28,6 +28,7 @@ module Blackjack
     end
 
     def start_round
+      raise GameOver if game_over?
       @player_hands = [Hand.new]
       @current_hand = @player_hands.first
       @dealer_hand = DealerHand.new
@@ -83,7 +84,7 @@ module Blackjack
     end
 
     def game_over?
-      @player_money < MINIMUM_BET || @deck.empty?
+      (@player_money < MINIMUM_BET && round_over?) || @deck.empty?
     end
 
     private

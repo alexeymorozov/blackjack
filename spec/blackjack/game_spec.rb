@@ -11,18 +11,25 @@ module Blackjack
       game
     end
 
-    describe "#bet" do
+    describe "#start_round" do
       context "no cards left in the deck" do
-        it "sends an error message" do
-          game = start_game("2♥")
-          expect { game.bet(1) }.to raise_error(EmptyDeck)
+        it "raises the GameOver exception" do
+          expect { start_game("") }.to raise_error(GameOver)
         end
       end
 
       context "no money left" do
-        it "sends an error message" do
-          game = start_game(nil, 0)
-          expect { game.bet(1) }.to raise_error(GameOver)
+        it "raises the GameOver exception" do
+          expect { start_game(nil, 0) }.to raise_error(GameOver)
+        end
+      end
+    end
+
+    describe "#bet" do
+      context "no cards left in the deck" do
+        it "raises the EmptyDeck exception" do
+          game = start_game("2♥")
+          expect { game.bet(1) }.to raise_error(EmptyDeck)
         end
       end
 

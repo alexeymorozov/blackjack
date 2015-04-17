@@ -6,7 +6,12 @@ module Blackjack
     end
 
     def start_round
-      @game.start_round
+      begin
+        @game.start_round
+      rescue GameOver
+        @message_sender.send_game_over
+      end
+
       @message_sender.welcome
       @message_sender.show_money(@game.player_money)
       @message_sender.prompt_for_bet

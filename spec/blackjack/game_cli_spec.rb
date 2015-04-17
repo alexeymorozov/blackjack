@@ -41,9 +41,8 @@ module Blackjack
 
       context "no money left" do
         it "sends an error message" do
-          game = start_game(nil, 0)
           expect(printer).to receive(:puts).with("The game is over.")
-          game.bet(1)
+          start_game(nil, 0)
         end
       end
 
