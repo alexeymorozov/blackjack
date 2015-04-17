@@ -3,7 +3,18 @@ module Blackjack
     INITIAL_PLAYER_MONEY = 1000
     MINIMUM_BET = 1
 
+    @@storage = Hash.new
+
     attr_reader :current_hand, :player_hands, :dealer_hand, :player_money
+
+    def self.create
+      game = Game.new
+      @@storage[game.object_id] = game
+    end
+
+    def self.find(object_id)
+      @@storage[object_id]
+    end
 
     def initialize(deck = nil, player_money = nil)
       @deck = deck || Deck.create_standard_deck.shuffle!

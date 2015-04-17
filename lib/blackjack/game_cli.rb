@@ -27,7 +27,10 @@ module Blackjack
         @message_sender.send_game_over
       end
 
-      @message_sender.show_bet(@game.player_money, @game.player_hands.first)
+      if @game.player_hands.first.bet
+        @message_sender.show_bet(@game.player_money, @game.player_hands.first)
+      end
+
       show_hands
     end
 
@@ -56,7 +59,9 @@ module Blackjack
     end
 
     def show_hands
-      @message_sender.show_hands(@game.dealer_hand, @game.player_hands.first)
+      if @game.player_hands.first.dealt?
+        @message_sender.show_hands(@game.dealer_hand, @game.player_hands.first)
+      end
 
       if @game.current_hand.nil?
         @message_sender.show_money(@game.player_money)
@@ -68,9 +73,13 @@ module Blackjack
         elsif hand.loss?
           @message_sender.send_loss
         end
-      else
-        @message_sender.prompt_for_action
+
+        if @game.game_over?
+          @message_sender.send_game_over
+        end
       end
+
+      @message_sender.prompt_for_action
     end
 
     def method_missing(*args)
