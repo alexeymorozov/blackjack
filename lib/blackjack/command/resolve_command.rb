@@ -25,9 +25,13 @@ module Blackjack
         player_hands.all? { |hand| hand.busted? }
       end
 
+      def all_hands_have_blackjacks?(player_hands)
+        player_hands.all? { |hand| hand.has_blackjack? }
+      end
+
       def resolve_dealer_hand
         @dealer_hand.face_up
-        while !@dealer_hand.full? && !@player_hands.first.has_blackjack?
+        while !@dealer_hand.full? && !all_hands_have_blackjacks?(@player_hands)
           @dealer_hand << @deck.pop.face_up
         end
       end
