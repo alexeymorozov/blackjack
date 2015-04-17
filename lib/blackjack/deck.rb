@@ -18,6 +18,7 @@ module Blackjack
 
     def shuffle!
       @cards.shuffle!
+      self
     end
 
     def pop
