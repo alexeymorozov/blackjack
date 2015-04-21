@@ -229,11 +229,28 @@ module Blackjack
         game
       end
 
+      context "round is over" do
+        it "raises the InvalidAction exception" do
+          game = start_game("A♥ 2♦ K♥ 3♦")
+          game.bet(1)
+          expect(game.round_over?).to be true
+          expect { game.stand }.to raise_error(InvalidAction)
+        end
+      end
+
       context "no cards left in the deck" do
         it "sends an error message" do
           game = start_game("2♥ 2♦ 3♥ 3♦")
           game.bet(1)
           expect { game.stand }.to raise_error(EmptyDeck)
+        end
+      end
+
+      context "no cards left in the deck but the dealer doesn't need new cards" do
+        it "doesn't raise an exception" do
+          game = start_game("2♥ A♦ 3♥ J♦")
+          game.bet(1)
+          game.stand
         end
       end
 

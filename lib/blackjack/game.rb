@@ -46,6 +46,7 @@ module Blackjack
 
     def stand
       raise BettingNotCompleted unless all_hands_have_bets?
+      raise InvalidAction unless can_stand?
       @current_hand.finish!
       evaluate_turn
     end
@@ -85,7 +86,7 @@ module Blackjack
     end
 
     def game_over?
-      (@player_money < MINIMUM_BET && round_over?) || @deck.empty?
+      round_over? && (@player_money < MINIMUM_BET || @deck.empty?)
     end
 
     private
