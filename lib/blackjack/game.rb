@@ -53,6 +53,7 @@ module Blackjack
 
     def hit
       raise BettingNotCompleted unless all_hands_have_bets?
+      raise InvalidAction unless can_stand?
       @current_hand << @deck.pop.face_up
       evaluate_turn
     end
