@@ -1,6 +1,10 @@
 module Blackjack
   module Command
     class DealCommand
+      def initialize(game)
+        @game = game
+      end
+
       def can_be_run?(player_hands)
         all_hands_have_bets?(player_hands) && !dealt?(player_hands)
       end
@@ -14,6 +18,8 @@ module Blackjack
             hand << card
           end
         end
+
+        @game.state = Game::STATE_PLAYING
 
         [nil, player_money]
       end

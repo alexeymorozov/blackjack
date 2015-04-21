@@ -5,6 +5,7 @@ module Blackjack
 
     STATE_IDLING = :idling
     STATE_BETTING = :betting
+    STATE_PLAYING = :playing
 
     @@storage = Hash.new
 
@@ -26,7 +27,7 @@ module Blackjack
       @player_money = player_money || INITIAL_PLAYER_MONEY
       @state = STATE_IDLING
       @commands = [
-        Command::DealCommand.new,
+        Command::DealCommand.new(self),
         Command::ResolveCommand.new(self),
         Command::TurnCommand.new
       ]
@@ -56,6 +57,7 @@ module Blackjack
     def stand
       raise BettingNotCompleted unless all_hands_have_bets?
       raise InvalidAction unless can_stand?
+      raise InvalidAction unless @state == STATE_PLAYING
       @current_hand.finish!
       evaluate_turn
     end
@@ -63,6 +65,7 @@ module Blackjack
     def hit
       raise BettingNotCompleted unless all_hands_have_bets?
       raise InvalidAction unless can_stand?
+      raise InvalidAction unless @state == STATE_PLAYING
       @current_hand << @deck.pop.face_up
       evaluate_turn
     end
