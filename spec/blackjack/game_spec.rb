@@ -12,6 +12,14 @@ module Blackjack
     end
 
     describe "#start_round" do
+      context "round is not over" do
+        it "raises the InvalidAction exception" do
+          game = start_game("A♥ 2♦ K♥ 3♦")
+          expect(game.round_over?).to be false
+          expect { game.start_round }.to raise_error(InvalidAction)
+        end
+      end
+
       context "no cards left in the deck" do
         it "raises the GameOver exception" do
           expect { start_game("") }.to raise_error(GameOver)

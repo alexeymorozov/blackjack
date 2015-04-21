@@ -29,6 +29,7 @@ module Blackjack
 
     def start_round
       raise GameOver if game_over?
+      raise InvalidAction unless can_start_round?
       @player_hands = [Hand.new]
       @current_hand = @player_hands.first
       @dealer_hand = DealerHand.new
