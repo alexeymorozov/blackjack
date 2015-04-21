@@ -1,8 +1,12 @@
 module Blackjack
   module Command
     class ResolveCommand
+      def initialize(game)
+        @game = game
+      end
+
       def can_be_run?(player_hands)
-        all_hands_are_finished?(player_hands) && !all_hands_are_busted?(player_hands)
+        all_hands_are_finished?(player_hands)
       end
 
       def run(player_money, deck, player_hands, dealer_hand, current_hand)
@@ -10,8 +14,15 @@ module Blackjack
         @deck = deck
         @player_hands = player_hands
         @dealer_hand = dealer_hand
-        resolve_dealer_hand
+
+        unless all_hands_are_busted?(player_hands)
+          resolve_dealer_hand
+        end
+
         handle_result_for_each_hands
+
+        @game.state = Game::STATE_IDLING
+
         [nil, @player_money]
       end
 

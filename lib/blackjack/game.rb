@@ -3,9 +3,13 @@ module Blackjack
     INITIAL_PLAYER_MONEY = 1000
     MINIMUM_BET = 1
 
+    STATE_IDLING = :idling
+    STATE_BETTING = :betting
+
     @@storage = Hash.new
 
     attr_reader :current_hand, :player_hands, :dealer_hand, :player_money
+    attr_accessor :state
 
     def self.create
       game = Game.new
@@ -20,9 +24,10 @@ module Blackjack
     def initialize(deck = nil, player_money = nil)
       @deck = deck || Deck.create_standard_deck.shuffle!
       @player_money = player_money || INITIAL_PLAYER_MONEY
+      @state = STATE_IDLING
       @commands = [
         Command::DealCommand.new,
-        Command::ResolveCommand.new,
+        Command::ResolveCommand.new(self),
         Command::TurnCommand.new
       ]
     end
@@ -30,6 +35,7 @@ module Blackjack
     def start_round
       raise GameOver if game_over?
       raise InvalidAction unless can_start_round?
+      raise InvalidAction unless @state == STATE_IDLING
       @player_hands = [Hand.new]
       @current_hand = @player_hands.first
       @dealer_hand = DealerHand.new
