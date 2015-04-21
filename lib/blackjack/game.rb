@@ -39,12 +39,14 @@ module Blackjack
       @player_hands = [Hand.new]
       @current_hand = @player_hands.first
       @dealer_hand = DealerHand.new
+      @state = STATE_BETTING
     end
 
     def bet(amount)
       raise GameOver if game_over?
       raise BettingAlreadyDone if @current_hand && @current_hand.bet
       raise InvalidAction unless can_bet?
+      raise InvalidAction unless @state == STATE_BETTING
       bet = prepare_bet(amount)
       @player_money -= bet
       @current_hand.bet = bet
