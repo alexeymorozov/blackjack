@@ -54,17 +54,15 @@ module Blackjack
     end
 
     def stand
-      raise BettingNotCompleted unless all_hands_have_bets?
-      raise InvalidAction unless can_stand?
-      raise InvalidAction unless @state == STATE_PLAYING
+      raise BettingNotCompleted if betting?
+      raise InvalidAction unless playing?
       @current_hand.finish!
       evaluate_turn
     end
 
     def hit
-      raise BettingNotCompleted unless all_hands_have_bets?
-      raise InvalidAction unless can_stand?
-      raise InvalidAction unless @state == STATE_PLAYING
+      raise BettingNotCompleted if betting?
+      raise InvalidAction unless playing?
       @current_hand << pop_card.face_up
       evaluate_turn
     end
