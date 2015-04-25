@@ -71,10 +71,6 @@ module Blackjack
       @player_hands.any? { |hand| hand.dealt? }
     end
 
-    def round_over?
-      @current_hand.nil?
-    end
-
     def idling?
       @state == STATE_IDLING
     end
@@ -131,10 +127,6 @@ module Blackjack
           @current_hand, @player_money = command.run(@player_money, @deck, @player_hands, @dealer_hand, @current_hand)
         end
       end
-    end
-
-    def all_hands_have_bets?
-      @player_hands.all? { |hand| hand.bet }
     end
   end
 end

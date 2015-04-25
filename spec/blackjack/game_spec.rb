@@ -15,7 +15,6 @@ module Blackjack
       context "round is not over" do
         it "raises the InvalidAction exception" do
           game = start_game("A♥ 2♦ K♥ 3♦")
-          expect(game.round_over?).to be false
           expect { game.start_round }.to raise_error(InvalidAction)
         end
       end
@@ -38,7 +37,6 @@ module Blackjack
         it "raises the InvalidAction exception" do
           game = start_game("A♥ 2♦ K♥ 3♦ Q♥")
           game.bet(1)
-          expect(game.round_over?).to be true
           expect { game.bet(1) }.to raise_error(InvalidAction)
         end
       end
@@ -163,7 +161,6 @@ module Blackjack
         it "raises the InvalidAction exception" do
           game = start_game("A♥ 2♦ K♥ 3♦")
           game.bet(1)
-          expect(game.round_over?).to be true
           expect { game.hit }.to raise_error(InvalidAction)
         end
       end
@@ -250,7 +247,6 @@ module Blackjack
         it "raises the InvalidAction exception" do
           game = start_game("A♥ 2♦ K♥ 3♦")
           game.bet(1)
-          expect(game.round_over?).to be true
           expect { game.stand }.to raise_error(InvalidAction)
         end
       end
