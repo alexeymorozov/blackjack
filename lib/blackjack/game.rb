@@ -10,8 +10,7 @@ module Blackjack
 
     @@storage = Hash.new
 
-    attr_reader :current_hand, :player_hands, :dealer_hand, :player_money
-    attr_accessor :state
+    attr_accessor :player_money, :deck, :player_hands, :current_hand, :dealer_hand, :state
 
     def self.create
       game = Game.new
@@ -35,36 +34,59 @@ module Blackjack
     end
 
     def start_round
-      raise GameOver if game_over?
-      raise InvalidAction unless idling?
-      @player_hands = [Hand.new]
-      @current_hand = @player_hands.first
-      @dealer_hand = DealerHand.new
-      @state = STATE_BETTING
+      if idling?
+        State::IdlingState.new(self).start_round
+      elsif betting?
+        State::BettingState.new(self).start_round 
+      elsif playing?
+        State::PlayingState.new(self).start_round
+      elsif game_over?
+        State::GameOverState.new(self).start_round
+      else
+        raise
+      end
     end
 
     def bet(amount)
-      raise GameOver if game_over?
-      raise BettingAlreadyDone if playing?
-      raise InvalidAction unless betting?
-      bet = prepare_bet(amount)
-      @player_money -= bet
-      @current_hand.bet = bet
-      evaluate_turn
+      if idling?
+        State::IdlingState.new(self).bet(amount)
+      elsif betting?
+        State::BettingState.new(self).bet(amount)
+      elsif playing?
+        State::PlayingState.new(self).bet(amount)
+      elsif game_over?
+        State::GameOverState.new(self).bet(amount)
+      else
+        raise
+      end
     end
 
     def stand
-      raise BettingNotCompleted if betting?
-      raise InvalidAction unless playing?
-      @current_hand.finish!
-      evaluate_turn
+      if idling?
+        State::IdlingState.new(self).stand
+      elsif betting?
+        State::BettingState.new(self).stand
+      elsif playing?
+        State::PlayingState.new(self).stand
+      elsif game_over?
+        State::GameOverState.new(self).stand
+      else
+        raise
+      end
     end
 
     def hit
-      raise BettingNotCompleted if betting?
-      raise InvalidAction unless playing?
-      @current_hand << pop_card.face_up
-      evaluate_turn
+      if idling?
+        State::IdlingState.new(self).hit
+      elsif betting?
+        State::BettingState.new(self).hit
+      elsif playing?
+        State::PlayingState.new(self).hit
+      elsif game_over?
+        State::GameOverState.new(self).hit
+      else
+        raise
+      end
     end
 
     def dealt?
@@ -105,19 +127,6 @@ module Blackjack
       rescue EmptyDeck => ex
         @state = STATE_GAME_OVER
         raise ex
-      end
-    end
-
-    private
-
-    def prepare_bet(bet_candidate)
-      integer_bet = bet_candidate.to_i
-      if integer_bet < MINIMUM_BET
-        MINIMUM_BET
-      elsif integer_bet > @player_money
-        @player_money
-      else
-        integer_bet
       end
     end
 
