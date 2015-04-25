@@ -19,7 +19,7 @@ module Blackjack
           end
         end
 
-        @game.state = Game::STATE_PLAYING
+        @game.set_playing
 
         [nil, player_money]
       end

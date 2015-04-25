@@ -9,7 +9,7 @@ module Blackjack
         @game.player_hands = [Hand.new]
         @game.current_hand = @game.player_hands.first
         @game.dealer_hand = DealerHand.new
-        @game.state = Game::STATE_BETTING
+        @game.set_betting
       end
 
       def bet(amount)

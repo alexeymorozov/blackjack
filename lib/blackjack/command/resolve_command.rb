@@ -21,7 +21,7 @@ module Blackjack
 
         handle_result_for_each_hands
 
-        @game.state = @game.has_prerequisites? ? Game::STATE_IDLING : Game::STATE_GAME_OVER
+        @game.set_between_rounds_state
 
         [nil, @player_money]
       end

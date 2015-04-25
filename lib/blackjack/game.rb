@@ -25,7 +25,7 @@ module Blackjack
     def initialize(deck = nil, player_money = nil)
       @deck = deck || Deck.create_standard_deck.shuffle!
       @player_money = player_money || INITIAL_PLAYER_MONEY
-      @state = has_prerequisites? ? STATE_IDLING : STATE_GAME_OVER
+      set_between_rounds_state
       @commands = [
         Command::DealCommand.new(self),
         Command::ResolveCommand.new(self),
@@ -107,6 +107,18 @@ module Blackjack
 
     def game_over?
       @state == STATE_GAME_OVER
+    end
+
+    def set_between_rounds_state
+      @state = has_prerequisites? ? STATE_IDLING : STATE_GAME_OVER
+    end
+
+    def set_betting
+      @state = STATE_BETTING
+    end
+
+    def set_playing
+      @state = STATE_PLAYING
     end
 
     def has_prerequisites?
