@@ -45,9 +45,8 @@ module Blackjack
 
     def bet(amount)
       raise GameOver if game_over?
-      raise BettingAlreadyDone if @current_hand && @current_hand.bet
-      raise InvalidAction unless can_bet?
-      raise InvalidAction unless @state == STATE_BETTING
+      raise BettingAlreadyDone if playing?
+      raise InvalidAction unless betting?
       bet = prepare_bet(amount)
       @player_money -= bet
       @current_hand.bet = bet
@@ -100,6 +99,14 @@ module Blackjack
 
     def idling?
       @state == STATE_IDLING
+    end
+
+    def betting?
+      @state == STATE_BETTING
+    end
+
+    def playing?
+      @state == STATE_PLAYING
     end
 
     def game_over?
