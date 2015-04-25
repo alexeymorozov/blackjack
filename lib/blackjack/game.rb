@@ -3,11 +3,6 @@ module Blackjack
     INITIAL_PLAYER_MONEY = 1000
     MINIMUM_BET = 1
 
-    STATE_IDLING = :idling
-    STATE_BETTING = :betting
-    STATE_PLAYING = :playing
-    STATE_GAME_OVER = :game_over
-
     @@storage = Hash.new
 
     attr_accessor :player_money, :deck, :player_hands, :current_hand, :dealer_hand, :state
@@ -25,7 +20,14 @@ module Blackjack
     def initialize(deck = nil, player_money = nil)
       @deck = deck || Deck.create_standard_deck.shuffle!
       @player_money = player_money || INITIAL_PLAYER_MONEY
+
+      @idling_state = State::IdlingState.new(self)
+      @betting_state = State::BettingState.new(self)
+      @playing_state = State::PlayingState.new(self)
+      @game_over_state = State::GameOverState.new(self)
+
       set_between_rounds_state
+
       @commands = [
         Command::DealCommand.new(self),
         Command::ResolveCommand.new(self),
@@ -94,31 +96,35 @@ module Blackjack
     end
 
     def idling?
-      @state == STATE_IDLING
+      @state == @idling_state
     end
 
     def betting?
-      @state == STATE_BETTING
+      @state == @betting_state
     end
 
     def playing?
-      @state == STATE_PLAYING
+      @state == @playing_state
     end
 
     def game_over?
-      @state == STATE_GAME_OVER
+      @state == @game_over_state
     end
 
     def set_between_rounds_state
-      @state = has_prerequisites? ? STATE_IDLING : STATE_GAME_OVER
+      @state = has_prerequisites? ? @idling_state : @game_over_state
     end
 
     def set_betting
-      @state = STATE_BETTING
+      @state = @betting_state
     end
 
     def set_playing
-      @state = STATE_PLAYING
+      @state = @playing_state
+    end
+
+    def set_game_over
+      @state = @game_over_state
     end
 
     def has_prerequisites?
@@ -137,7 +143,7 @@ module Blackjack
       begin
         @deck.pop
       rescue EmptyDeck => ex
-        @state = STATE_GAME_OVER
+        set_game_over
         raise ex
       end
     end
