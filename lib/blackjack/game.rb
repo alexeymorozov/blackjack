@@ -36,59 +36,19 @@ module Blackjack
     end
 
     def start_round
-      if idling?
-        State::IdlingState.new(self).start_round
-      elsif betting?
-        State::BettingState.new(self).start_round 
-      elsif playing?
-        State::PlayingState.new(self).start_round
-      elsif game_over?
-        State::GameOverState.new(self).start_round
-      else
-        raise
-      end
+      @state.start_round
     end
 
     def bet(amount)
-      if idling?
-        State::IdlingState.new(self).bet(amount)
-      elsif betting?
-        State::BettingState.new(self).bet(amount)
-      elsif playing?
-        State::PlayingState.new(self).bet(amount)
-      elsif game_over?
-        State::GameOverState.new(self).bet(amount)
-      else
-        raise
-      end
+      @state.bet(amount)
     end
 
     def stand
-      if idling?
-        State::IdlingState.new(self).stand
-      elsif betting?
-        State::BettingState.new(self).stand
-      elsif playing?
-        State::PlayingState.new(self).stand
-      elsif game_over?
-        State::GameOverState.new(self).stand
-      else
-        raise
-      end
+      @state.stand
     end
 
     def hit
-      if idling?
-        State::IdlingState.new(self).hit
-      elsif betting?
-        State::BettingState.new(self).hit
-      elsif playing?
-        State::PlayingState.new(self).hit
-      elsif game_over?
-        State::GameOverState.new(self).hit
-      else
-        raise
-      end
+      @state.hit
     end
 
     def dealt?
