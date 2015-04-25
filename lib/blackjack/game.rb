@@ -6,6 +6,7 @@ module Blackjack
     STATE_IDLING = :idling
     STATE_BETTING = :betting
     STATE_PLAYING = :playing
+    STATE_GAME_OVER = :game_over
 
     @@storage = Hash.new
 
@@ -25,7 +26,7 @@ module Blackjack
     def initialize(deck = nil, player_money = nil)
       @deck = deck || Deck.create_standard_deck.shuffle!
       @player_money = player_money || INITIAL_PLAYER_MONEY
-      @state = STATE_IDLING
+      @state = has_prerequisites? ? STATE_IDLING : STATE_GAME_OVER
       @commands = [
         Command::DealCommand.new(self),
         Command::ResolveCommand.new(self),
@@ -66,7 +67,7 @@ module Blackjack
       raise BettingNotCompleted unless all_hands_have_bets?
       raise InvalidAction unless can_stand?
       raise InvalidAction unless @state == STATE_PLAYING
-      @current_hand << @deck.pop.face_up
+      @current_hand << pop_card.face_up
       evaluate_turn
     end
 
@@ -99,7 +100,28 @@ module Blackjack
     end
 
     def game_over?
-      round_over? && (@player_money < MINIMUM_BET || @deck.empty?)
+      @state == STATE_GAME_OVER
+    end
+
+    def has_prerequisites?
+      has_money? && has_cards?
+    end
+
+    def has_money?
+      @player_money >= MINIMUM_BET
+    end
+
+    def has_cards?
+      !@deck.empty?
+    end
+
+    def pop_card
+      begin
+        @deck.pop
+      rescue EmptyDeck => ex
+        @state = STATE_GAME_OVER
+        raise ex
+      end
     end
 
     private

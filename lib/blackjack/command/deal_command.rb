@@ -13,7 +13,7 @@ module Blackjack
         hands = player_hands + [dealer_hand]
         2.times do |i|
           hands.each do |hand|
-            card = deck.pop
+            card = @game.pop_card
             card.face_up unless hand.equal?(dealer_hand) && i == 1
             hand << card
           end

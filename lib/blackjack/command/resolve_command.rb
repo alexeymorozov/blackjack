@@ -21,7 +21,7 @@ module Blackjack
 
         handle_result_for_each_hands
 
-        @game.state = Game::STATE_IDLING
+        @game.state = @game.has_prerequisites? ? Game::STATE_IDLING : Game::STATE_GAME_OVER
 
         [nil, @player_money]
       end
@@ -43,7 +43,7 @@ module Blackjack
       def resolve_dealer_hand
         @dealer_hand.face_up
         while !@dealer_hand.full? && !all_hands_have_blackjacks?(@player_hands)
-          @dealer_hand << @deck.pop.face_up
+          @dealer_hand << @game.pop_card.face_up
         end
       end
 
