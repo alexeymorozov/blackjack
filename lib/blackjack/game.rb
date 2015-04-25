@@ -36,8 +36,7 @@ module Blackjack
 
     def start_round
       raise GameOver if game_over?
-      raise InvalidAction unless can_start_round?
-      raise InvalidAction unless @state == STATE_IDLING
+      raise InvalidAction unless idling?
       @player_hands = [Hand.new]
       @current_hand = @player_hands.first
       @dealer_hand = DealerHand.new
@@ -97,6 +96,10 @@ module Blackjack
 
     def round_over?
       @current_hand.nil?
+    end
+
+    def idling?
+      @state == STATE_IDLING
     end
 
     def game_over?
