@@ -67,28 +67,8 @@ module Blackjack
       evaluate_turn
     end
 
-    def can_bet?
-      round_started? && @current_hand.bet.nil?
-    end
-
-    def can_stand?
-      round_started? && dealt?
-    end
-
-    def can_hit?
-      round_started? && dealt?
-    end
-
-    def can_start_round?
-      round_over? && !game_over?
-    end
-
     def dealt?
       @player_hands.any? { |hand| hand.dealt? }
-    end
-
-    def round_started?
-      !round_over? && !game_over?
     end
 
     def round_over?

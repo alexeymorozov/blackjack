@@ -20,8 +20,8 @@
   <p>Game over!</p>
 <% end %>
 
-<% if @game.can_bet? %><%= render "bet" %><% end %>
-<% if @game.can_stand? %><%= render "stand" %><% end %>
-<% if @game.can_hit? %><%= render "hit" %><% end %>
-<% if @game.can_start_round? %><%= render "new_round" %><% end %>
+<% if @game.betting? %><%= render "bet" %><% end %>
+<% if @game.playing? %><%= render "stand" %><% end %>
+<% if @game.playing? %><%= render "hit" %><% end %>
+<% if @game.idling? %><%= render "new_round" %><% end %>
 <% if @game.game_over? %><%= render "form" %><% end %>
