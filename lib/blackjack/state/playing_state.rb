@@ -10,12 +10,12 @@ module Blackjack
       end
 
       def stand
-        @game.current_hand.finish!
+        @game.player_hands.current.finish!
         try_resolve
       end
 
       def hit
-        @game.current_hand << @game.pop_card.face_up
+        @game.player_hands.current << @game.pop_card.face_up
         try_resolve
       end
 

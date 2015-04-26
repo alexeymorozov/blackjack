@@ -66,7 +66,7 @@ module Blackjack
         @message_sender.show_hands(@game.dealer_hand, @game.player_hands.first)
       end
 
-      if @game.current_hand.nil?
+      if @game.idling? || @game.game_over?
         @message_sender.show_money(@game.player_money)
         hand = @game.player_hands.first
         if hand.win?

@@ -57,12 +57,12 @@ module Blackjack
       end
 
       context "the round has been started, finished, and started again" do
-        it "prompts the player for the next action" do
+        it "is playing" do
           game = start_game("A♥ 2♦ J♥ 3♦ 4♥ 4♦ 5♥ 5♦")
           game.bet(1)
           game.start_round
           game.bet(1)
-          expect(game.current_hand).not_to be_nil
+          expect(game.playing?).to be true
         end
       end
 

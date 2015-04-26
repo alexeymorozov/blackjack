@@ -115,14 +115,6 @@ module Blackjack
       !@deck.empty?
     end
 
-    def current_hand
-      @player_hands.current
-    end
-
-    def current_hand=(hand)
-      @player_hands.current = hand
-    end
-
     def pop_card
       begin
         @deck.pop
