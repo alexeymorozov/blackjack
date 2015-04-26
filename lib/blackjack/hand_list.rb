@@ -1,7 +1,5 @@
 module Blackjack
   class HandList < Array
-    attr_accessor :current
-
     def all_finished?
       all? { |hand| hand.finished? }
     end
@@ -20,6 +18,14 @@ module Blackjack
 
     def dealt?
       any? { |hand| hand.dealt? }
+    end
+
+    def current
+      @current
+    end
+
+    def rewind
+      @current = nil
     end
 
     def next

@@ -15,7 +15,7 @@ module Blackjack
           end
         end
 
-        @game.player_hands.current = nil
+        @game.player_hands.rewind
 
         @game.set_playing
         @game.try_resolve

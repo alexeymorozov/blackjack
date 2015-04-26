@@ -17,7 +17,6 @@ module Blackjack
 
         handle_result_for_each_hands
 
-        @game.player_hands.current = nil
         @game.player_money = @player_money
 
         @game.set_between_rounds_state

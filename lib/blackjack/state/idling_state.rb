@@ -7,7 +7,8 @@ module Blackjack
 
       def start_round
         @game.player_hands = HandList.new([Hand.new])
-        @game.player_hands.current = @game.player_hands.first
+        @game.player_hands.rewind
+        @game.player_hands.next
         @game.dealer_hand = DealerHand.new
         @game.set_betting
       end
