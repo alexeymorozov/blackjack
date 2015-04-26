@@ -29,10 +29,6 @@ module Blackjack
       @game_over_state = State::GameOverState.new(self)
 
       set_between_rounds_state
-
-      @commands = [
-        Command::TurnCommand.new
-      ]
     end
 
     def start_round
@@ -137,10 +133,8 @@ module Blackjack
     end
 
     def evaluate_turn
-      @commands.each do |command|
-        if command.can_be_run?(@player_hands)
-          @player_hands.current, @player_money = command.run(@player_money, @deck, @player_hands, @dealer_hand, @player_hands.current)
-        end
+      if !player_hands.all_finished?
+        player_hands.next
       end
     end
   end
