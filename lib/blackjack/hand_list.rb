@@ -42,7 +42,7 @@ module Blackjack
       @current = nil
     end
 
-    def next
+    def next_not_finished
       raise "All finished" if all_finished?
 
       candidate = nil

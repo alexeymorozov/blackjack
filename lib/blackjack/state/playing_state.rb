@@ -24,7 +24,7 @@ module Blackjack
           @game.set_resolving
           @game.resolve
         else
-          @game.player_hands.next
+          @game.player_hands.next_not_finished
         end
       end
     end
