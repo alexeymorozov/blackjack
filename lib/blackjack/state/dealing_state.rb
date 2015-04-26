@@ -6,13 +6,14 @@ module Blackjack
       end
 
       def deal
-        hands = @game.player_hands + [@game.dealer_hand]
         2.times do |i|
-          hands.each do |hand|
-            card = @game.pop_card
-            card.face_up unless hand.equal?(@game.dealer_hand) && i == 1
-            hand << card
+          @game.player_hands.each do |hand|
+            hand << @game.pop_card.face_up
           end
+
+          card = @game.pop_card
+          card.face_up unless i == 1
+          @game.dealer_hand << card
         end
 
         @game.player_hands.rewind

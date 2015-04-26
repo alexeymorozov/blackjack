@@ -1,5 +1,9 @@
 module Blackjack
-  class HandList < Array
+  class HandList
+    def initialize(hands)
+      @hands = hands
+    end
+
     def all_finished?
       all? { |hand| hand.finished? }
     end
@@ -35,16 +39,32 @@ module Blackjack
         if candidate_hand.nil?
           next_index = 0
         else
-          current_index = find_index(candidate_hand)
-          max_index = size - 1
+          current_index = @hands.find_index(candidate_hand)
+          max_index = @hands.size - 1
           next_index = current_index == max_index ? 0 : current_index + 1
         end
 
-        candidate_hand = slice(next_index)
+        candidate_hand = @hands.slice(next_index)
         break if !candidate_hand.finished?
       end
 
       @current = candidate_hand
+    end
+
+    def first
+      @hands.first
+    end
+
+    def each(&block)
+      @hands.each(&block)
+    end
+
+    def all?(&block)
+      @hands.all?(&block)
+    end
+
+    def any?(&block)
+      @hands.any?(&block)
     end
   end
 end
