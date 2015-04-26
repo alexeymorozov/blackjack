@@ -6,23 +6,31 @@ module Blackjack
     end
 
     def all_finished?
-      all? { |hand| hand.finished? }
+      @hands.all? { |hand| hand.finished? }
     end
 
     def all_busted?
-      all? { |hand| hand.busted? }
+      @hands.all? { |hand| hand.busted? }
     end
 
     def all_have_blackjacks?
-      all? { |hand| hand.has_blackjack? }
+      @hands.all? { |hand| hand.has_blackjack? }
     end
 
     def all_have_bets?
-      all? { |hand| hand.bet }
+      @hands.all? { |hand| hand.bet }
     end
 
     def dealt?
-      any? { |hand| hand.dealt? }
+      @hands.any? { |hand| hand.dealt? }
+    end
+
+    def first
+      @hands.first
+    end
+
+    def each(&block)
+      @hands.each(&block)
     end
 
     def current
@@ -49,22 +57,6 @@ module Blackjack
       end
 
       @current = candidate
-    end
-
-    def first
-      @hands.first
-    end
-
-    def each(&block)
-      @hands.each(&block)
-    end
-
-    def all?(&block)
-      @hands.all?(&block)
-    end
-
-    def any?(&block)
-      @hands.any?(&block)
     end
   end
 end
