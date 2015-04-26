@@ -13,6 +13,8 @@ module Blackjack
         if @game.player_hands.all_have_bets?
           @game.set_dealing
           @game.deal
+        else
+          @game.player_hands.next
         end
       end
 

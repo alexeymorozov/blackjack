@@ -131,11 +131,5 @@ module Blackjack
         raise ex
       end
     end
-
-    def evaluate_turn
-      if !player_hands.all_finished?
-        player_hands.next
-      end
-    end
   end
 end

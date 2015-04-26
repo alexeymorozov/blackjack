@@ -19,8 +19,6 @@ module Blackjack
 
         @game.set_playing
         @game.try_resolve
-
-        @game.evaluate_turn
       end
     end
   end
