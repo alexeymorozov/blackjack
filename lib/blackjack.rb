@@ -1,4 +1,5 @@
 require 'blackjack/game'
+require 'blackjack/state/abstract_state'
 require 'blackjack/state/idling_state'
 require 'blackjack/state/betting_state'
 require 'blackjack/state/playing_state'

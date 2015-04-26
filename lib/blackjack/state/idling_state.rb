@@ -1,6 +1,6 @@
 module Blackjack
   module State
-    class IdlingState
+    class IdlingState < AbstractState
       def initialize(game)
         @game = game
       end
@@ -10,18 +10,6 @@ module Blackjack
         @game.current_hand = @game.player_hands.first
         @game.dealer_hand = DealerHand.new
         @game.set_betting
-      end
-
-      def bet(amount)
-        raise InvalidAction
-      end
-
-      def stand
-        raise InvalidAction
-      end
-
-      def hit
-        raise InvalidAction
       end
     end
   end

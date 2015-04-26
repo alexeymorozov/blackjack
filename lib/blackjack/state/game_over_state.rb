@@ -1,6 +1,6 @@
 module Blackjack
   module State
-    class GameOverState
+    class GameOverState < AbstractState
       def initialize(game)
         @game = game
       end
@@ -11,14 +11,6 @@ module Blackjack
 
       def bet(amount)
         raise GameOver
-      end
-
-      def stand
-        raise InvalidAction
-      end
-
-      def hit
-        raise InvalidAction
       end
     end
   end

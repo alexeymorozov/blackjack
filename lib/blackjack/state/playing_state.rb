@@ -1,12 +1,8 @@
 module Blackjack
   module State
-    class PlayingState
+    class PlayingState < AbstractState
       def initialize(game)
         @game = game
-      end
-
-      def start_round
-        raise InvalidAction
       end
 
       def bet(amount)
