@@ -52,7 +52,7 @@ module Blackjack
     end
 
     def dealt?
-      @player_hands.any? { |hand| hand.dealt? }
+      @player_hands.dealt?
     end
 
     def idling?

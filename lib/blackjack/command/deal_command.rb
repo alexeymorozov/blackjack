@@ -6,7 +6,7 @@ module Blackjack
       end
 
       def can_be_run?(player_hands)
-        all_hands_have_bets?(player_hands) && !dealt?(player_hands)
+        player_hands.all_have_bets? && !player_hands.dealt?
       end
 
       def run(player_money, deck, player_hands, dealer_hand, current_hand)
@@ -22,16 +22,6 @@ module Blackjack
         @game.set_playing
 
         [nil, player_money]
-      end
-
-      private
-
-      def all_hands_have_bets?(player_hands)
-        player_hands.all? { |hand| hand.bet }
-      end
-
-      def dealt?(player_hands)
-        player_hands.any? { |hand| hand.dealt? }
       end
     end
   end

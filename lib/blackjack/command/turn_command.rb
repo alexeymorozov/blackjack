@@ -6,7 +6,7 @@ module Blackjack
       end
 
       def run(player_money, deck, player_hands, dealer_hand, current_hand)
-        if all_hands_are_finished?(player_hands)
+        if player_hands.all_finished?
           return [nil, player_money]
         end
 
@@ -27,12 +27,6 @@ module Blackjack
         end
 
         [current_hand, player_money]
-      end
-
-      private
-
-      def all_hands_are_finished?(player_hands)
-        player_hands.all? { |hand| hand.finished? }
       end
     end
   end

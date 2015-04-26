@@ -6,7 +6,7 @@ module Blackjack
       end
 
       def can_be_run?(player_hands)
-        all_hands_are_finished?(player_hands)
+        player_hands.all_finished?
       end
 
       def run(player_money, deck, player_hands, dealer_hand, current_hand)
@@ -15,7 +15,7 @@ module Blackjack
         @player_hands = player_hands
         @dealer_hand = dealer_hand
 
-        unless all_hands_are_busted?(player_hands)
+        unless player_hands.all_busted?
           resolve_dealer_hand
         end
 
@@ -28,21 +28,9 @@ module Blackjack
 
       private
 
-      def all_hands_are_finished?(player_hands)
-        player_hands.all? { |hand| hand.finished? }
-      end
-
-      def all_hands_are_busted?(player_hands)
-        player_hands.all? { |hand| hand.busted? }
-      end
-
-      def all_hands_have_blackjacks?(player_hands)
-        player_hands.all? { |hand| hand.has_blackjack? }
-      end
-
       def resolve_dealer_hand
         @dealer_hand.face_up
-        while !@dealer_hand.full? && !all_hands_have_blackjacks?(@player_hands)
+        while !@dealer_hand.full? && !@player_hands.all_have_blackjacks?
           @dealer_hand << @game.pop_card.face_up
         end
       end
