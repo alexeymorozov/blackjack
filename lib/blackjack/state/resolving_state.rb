@@ -1,29 +1,26 @@
 module Blackjack
-  module Command
-    class ResolveCommand
+  module State
+    class ResolvingState < AbstractState
       def initialize(game)
         @game = game
       end
 
-      def can_be_run?(player_hands)
-        player_hands.all_finished?
-      end
+      def resolve
+        @player_money = @game.player_money
+        @deck = @game.deck
+        @player_hands = @game.player_hands
+        @dealer_hand = @game.dealer_hand
 
-      def run(player_money, deck, player_hands, dealer_hand, current_hand)
-        @player_money = player_money
-        @deck = deck
-        @player_hands = player_hands
-        @dealer_hand = dealer_hand
-
-        unless player_hands.all_busted?
+        unless @game.player_hands.all_busted?
           resolve_dealer_hand
         end
 
         handle_result_for_each_hands
 
-        @game.set_between_rounds_state
+        @game.player_hands.current = nil
+        @game.player_money = @player_money
 
-        [nil, @player_money]
+        @game.set_between_rounds_state
       end
 
       private

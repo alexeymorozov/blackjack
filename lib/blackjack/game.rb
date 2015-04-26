@@ -25,12 +25,12 @@ module Blackjack
       @betting_state = State::BettingState.new(self)
       @dealing_state = State::DealingState.new(self)
       @playing_state = State::PlayingState.new(self)
+      @resolving_state = State::ResolvingState.new(self)
       @game_over_state = State::GameOverState.new(self)
 
       set_between_rounds_state
 
       @commands = [
-        Command::ResolveCommand.new(self),
         Command::TurnCommand.new
       ]
     end
@@ -53,6 +53,14 @@ module Blackjack
 
     def hit
       @state.hit
+    end
+
+    def try_resolve
+      @state.try_resolve
+    end
+
+    def resolve
+      @state.resolve
     end
 
     def dealt?
@@ -89,6 +97,10 @@ module Blackjack
 
     def set_playing
       @state = @playing_state
+    end
+
+    def set_resolving
+      @state = @resolving_state
     end
 
     def set_game_over

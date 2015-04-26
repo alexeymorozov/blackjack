@@ -18,6 +18,8 @@ module Blackjack
         @game.player_hands.current = nil
 
         @game.set_playing
+        @game.try_resolve
+
         @game.evaluate_turn
       end
     end
