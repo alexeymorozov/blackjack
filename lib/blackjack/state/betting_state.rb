@@ -8,13 +8,13 @@ module Blackjack
       def bet(amount)
         bet = prepare_bet(amount)
         @game.player_money -= bet
-        @game.player_hands.current.bet = bet
+        @game.turn.hand.bet = bet
 
         if @game.player_hands.all_have_bets?
           @game.set_dealing
           @game.deal
         else
-          @game.player_hands.next
+          @game.turn.next
         end
       end
 

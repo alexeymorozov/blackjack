@@ -21,7 +21,7 @@ module Blackjack
           @game.resolve
         else
           @game.set_playing
-          @game.player_hands.rewind_to_first
+          @game.turn.rewind_to_first
         end
       end
     end

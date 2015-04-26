@@ -5,7 +5,7 @@ module Blackjack
 
     @@storage = Hash.new
 
-    attr_accessor :player_money, :deck, :player_hands, :dealer_hand, :state
+    attr_accessor :player_money, :deck, :player_hands, :dealer_hand, :turn, :state
 
     def self.create
       game = Game.new

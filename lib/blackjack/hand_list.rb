@@ -2,8 +2,6 @@ module Blackjack
   class HandList
     def initialize(hands)
       @hands = hands
-      @enum = hands.to_enum
-      rewind_to_first
     end
 
     def all_finished?
@@ -32,33 +30,6 @@ module Blackjack
 
     def each(&block)
       @hands.each(&block)
-    end
-
-    def current
-      @current
-    end
-
-    def rewind_to_first
-      @enum.rewind
-      self.next
-    end
-
-    def next_not_finished
-      raise "All finished" if all_finished?
-
-      loop do
-        self.next
-        break unless current.finished?
-      end
-
-      current
-    end
-
-    def next
-      @current = @enum.next
-    rescue StopIteration
-      @enum.rewind
-      @current = @enum.next
     end
   end
 end
