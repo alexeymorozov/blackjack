@@ -9,7 +9,11 @@ module Blackjack
         bet = prepare_bet(amount)
         @game.player_money -= bet
         @game.current_hand.bet = bet
-        @game.evaluate_turn
+
+        if @game.player_hands.all_have_bets?
+          @game.set_dealing
+          @game.deal
+        end
       end
 
       def stand
