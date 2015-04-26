@@ -2,6 +2,7 @@ module Blackjack
   class HandList
     def initialize(hands)
       @hands = hands
+      @enum = hands.to_enum
     end
 
     def all_finished?
@@ -29,26 +30,25 @@ module Blackjack
     end
 
     def rewind
+      @enum.rewind
       @current = nil
     end
 
     def next
-      candidate_hand = current
+      raise "All finished" if all_finished?
+
+      candidate = nil
 
       loop do
-        if candidate_hand.nil?
-          next_index = 0
-        else
-          current_index = @hands.find_index(candidate_hand)
-          max_index = @hands.size - 1
-          next_index = current_index == max_index ? 0 : current_index + 1
+        begin
+          candidate = @enum.next
+          break unless candidate.finished?
+        rescue StopIteration
+          @enum.rewind
         end
-
-        candidate_hand = @hands.slice(next_index)
-        break if !candidate_hand.finished?
       end
 
-      @current = candidate_hand
+      @current = candidate
     end
 
     def first
