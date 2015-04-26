@@ -14,7 +14,7 @@ module Blackjack
           @game.set_dealing
           @game.deal
         else
-          @game.player_hands.next_not_finished
+          @game.player_hands.next
         end
       end
 
