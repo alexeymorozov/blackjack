@@ -51,10 +51,6 @@ module Blackjack
       @state.hit
     end
 
-    def try_resolve
-      @state.try_resolve
-    end
-
     def resolve
       @state.resolve
     end

@@ -11,15 +11,17 @@ module Blackjack
 
       def stand
         @game.player_hands.current.finish!
-        try_resolve
+        resolve_or_next_hand
       end
 
       def hit
         @game.player_hands.current << @game.pop_card.face_up
-        try_resolve
+        resolve_or_next_hand
       end
 
-      def try_resolve
+      private
+
+      def resolve_or_next_hand
         if @game.player_hands.all_finished?
           @game.set_resolving
           @game.resolve

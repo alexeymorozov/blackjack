@@ -16,10 +16,14 @@ module Blackjack
           @game.dealer_hand << card
         end
 
-        @game.player_hands.rewind
-
-        @game.set_playing
-        @game.try_resolve
+        if @game.player_hands.all_finished?
+          @game.set_resolving
+          @game.resolve
+        else
+          @game.set_playing
+          @game.player_hands.rewind
+          @game.player_hands.next
+        end
       end
     end
   end
