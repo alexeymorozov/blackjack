@@ -45,18 +45,19 @@ module Blackjack
     def next_not_finished
       raise "All finished" if all_finished?
 
-      candidate = nil
-
       loop do
-        begin
-          candidate = @enum.next
-          break unless candidate.finished?
-        rescue StopIteration
-          @enum.rewind
-        end
+        self.next
+        break unless current.finished?
       end
 
-      @current = candidate
+      current
+    end
+
+    def next
+      @current = @enum.next
+    rescue StopIteration
+      @enum.rewind
+      @current = @enum.next
     end
   end
 end
