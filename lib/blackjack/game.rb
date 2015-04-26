@@ -5,7 +5,7 @@ module Blackjack
 
     @@storage = Hash.new
 
-    attr_accessor :player_money, :deck, :player_hands, :current_hand, :dealer_hand, :state
+    attr_accessor :player_money, :deck, :player_hands, :dealer_hand, :state
 
     def self.create
       game = Game.new
@@ -99,6 +99,14 @@ module Blackjack
       !@deck.empty?
     end
 
+    def current_hand
+      @player_hands.current
+    end
+
+    def current_hand=(hand)
+      @player_hands.current = hand
+    end
+
     def pop_card
       begin
         @deck.pop
@@ -111,7 +119,7 @@ module Blackjack
     def evaluate_turn
       @commands.each do |command|
         if command.can_be_run?(@player_hands)
-          @current_hand, @player_money = command.run(@player_money, @deck, @player_hands, @dealer_hand, @current_hand)
+          @player_hands.current, @player_money = command.run(@player_money, @deck, @player_hands, @dealer_hand, @player_hands.current)
         end
       end
     end
