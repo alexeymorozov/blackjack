@@ -2,7 +2,6 @@ module Blackjack
   class Turn
     def initialize(hands)
       @hands = hands
-      @enum = hands.to_enum
       rewind_to_first
     end
 
@@ -11,8 +10,7 @@ module Blackjack
     end
 
     def rewind_to_first
-      @enum.rewind
-      self.next
+      @hand = @hands.first
     end
 
     def next_not_finished
@@ -27,10 +25,10 @@ module Blackjack
     end
 
     def next
-      @hand = @enum.next
-    rescue StopIteration
-      @enum.rewind
-      @hand = @enum.next
+      current_index = @hands.find_index(@hand)
+      max_index = @hands.size - 1
+      next_index = current_index == max_index ? 0 : current_index + 1
+      @hand = @hands[next_index]
     end
   end
 end
