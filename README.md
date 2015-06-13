@@ -2,4 +2,4 @@
 
 ## Play
 
-    bin/blackjack
+http://am-blackjack.herokuapp.com
